@@ -1,21 +1,26 @@
+import streamlit as st  # นำคำสั่งนี้มาไว้บรรทัดที่ 1 เสมอ!
 import os
 import json
-import time
+import io
 from google import genai
 from openpyxl import load_workbook
-from PIL import Image
-from pypdf import PdfReader
+import pandas as pd
 
-# 1. ตั้งค่า API Key ของ Gemini
-GEMINI_API_KEY = st.secrets["MY_SECRET_KEY"]
-client = genai.Client(api_key=GEMINI_API_KEY)
+# ตั้งค่าหน้าตาของเว็บแอป
+st.set_page_config(page_title="HR AI Automation System", page_icon="🤖", layout="wide")
 
-# 2. ฟังก์ชันเรียนรู้ตาราง (รองรับการดึงประวัติจากโฟลเดอร์ Output มารวมด้วยเพื่อไม่ให้รวน)
-def learn_all_templates(templates_folder="hr_templates", output_folder="output_files"):
-    template_structures = {}
-    if not os.path.exists(templates_folder):
-        os.makedirs(templates_folder)
-        return template_structures
+# เรียกใช้งาน API Key จากระบบหลังบ้าน (Secrets)
+try:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+    client = genai.Client(api_key=GEMINI_API_KEY)
+except Exception as e:
+    st.error("❌ ไม่พบ API Key ในระบบหลังบ้าน กรุณาตั้งค่าใน Advanced Settings ของ Streamlit Cloud")
+    st.stop()
+
+# โฟลเดอร์ที่ต้องใช้ในระบบ
+TEMPLATES_FOLDER = "hr_templates"
+
+# ... โค้ดส่วนที่เหลือด้านล่างปล่อยไว้เหมือนเดิมได้เลยครับ ...
         
     print("🤖 [ระบบเรียนรู้] กำลังอ่านโครงสร้างคอลัมน์และรายชื่อพนักงาน...")
     for filename in os.listdir(templates_folder):
