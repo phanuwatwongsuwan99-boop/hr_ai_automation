@@ -5,11 +5,56 @@ import io
 from google import genai
 from openpyxl import load_workbook
 import pandas as pd
+from PIL import Image
 
-# 1. ตั้งค่าหน้าตาของเว็บแอปให้สวยงามน่าใช้งาน
-st.set_page_config(page_title="HR AI Automation System", page_icon="🤖", layout="wide")
+# 1. ตั้งค่าโครงสร้างหน้าเว็บและธีมส่วนหัว
+st.set_page_config(
+    page_title="HR AI Automation System", 
+    page_icon="🤖", 
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# เรียกใช้งาน API Key ที่เราซ่อนไว้ในระบบหลังบ้านของ Cloud อย่างปลอดภัย
+# ตกแต่ง CSS ตกแต่งปุ่มและฟอนต์เพิ่มเติมให้ดูพรีเมียมขึ้น
+st.markdown("""
+    <style>
+    .main-title {
+        font-size: 2.5rem !important;
+        font-weight: 700 !important;
+        color: #1E3A8A;
+        margin-bottom: 5px;
+    }
+    .sub-title {
+        font-size: 1.1rem !important;
+        color: #4B5563;
+        margin-bottom: 25px;
+    }
+    .step-box {
+        background-color: #F3F4F6;
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 5px solid #3B82F6;
+        height: 100%;
+    }
+    div.stButton > button:first-child {
+        background-color: #1E3A8A !important;
+        color: white !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        padding: 10px 24px !important;
+        border: none !important;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1) !important;
+        transition: all 0.2s !important;
+    }
+    div.stButton > button:first-child:hover {
+        background-color: #2563EB !important;
+        transform: translateY(-1px) !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# เรียกใช้งาน API Key จากระบบหลังบ้านอย่างปลอดภัย
 try:
     GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
     client = genai.Client(api_key=GEMINI_API_KEY)
@@ -17,15 +62,13 @@ except Exception as e:
     st.error("❌ ไม่พบ API Key ในระบบหลังบ้าน กรุณาตั้งค่าใน Advanced Settings ของ Streamlit Cloud")
     st.stop()
 
-# โฟลเดอร์ที่ต้องใช้ในระบบ
 TEMPLATES_FOLDER = "hr_templates"
 
-# 2. ฟังก์ชันเรียนรู้โครงสร้างคอลัมน์และรายชื่อพนักงานจากทุกเทมเพลต
+# ฟังก์ชันเรียนรู้โครงสร้างคอลัมน์
 def learn_templates():
     structures = {}
     if not os.path.exists(TEMPLATES_FOLDER):
         return structures
-        
     for filename in os.listdir(TEMPLATES_FOLDER):
         if filename.endswith((".xlsx", ".xls")) and not filename.startswith((".", "~$")):
             file_path = os.path.join(TEMPLATES_FOLDER, filename)
@@ -49,76 +92,108 @@ def learn_templates():
                         
                 if headers:
                     structures[filename] = {"headers": headers, "existing_data": existing_rows}
-            except Exception as e:
+            except:
                 pass
     return structures
 
-# --- หน้าตาเว็บแอปฝั่งพนักงานใช้งาน (UI) ---
-st.title("🤖 ระบบ HR AI Automation คีย์ข้อมูลสัมพันธ์อัตโนมัติ")
-st.write("ยินดีต้อนรับ! ระบบนี้จะช่วยคุณดึงข้อมูลจากเอกสารดิบ (เช่น ไฟล์ค่าคอมมิชชั่น, ไฟล์โอที) แล้วนำไปจับคู่กรอกลงในตารางเทมเพลต HR ของคุณให้อัตโนมัติโดยอ้างอิงจากรหัสหรือชื่อพนักงาน")
-st.write("---")
+# --- ส่วนจัดแสดงหน้าต่างเว็บแอป (UI) ---
 
-# ส่วนที่ 1: แนะนำผู้ใช้งานและให้ดาวน์โหลดเทมเพลต
-st.subheader("📋 ขั้นตอนการใช้งานสำหรับเจ้าหน้าที่ HR")
-col_step1, col_step2, col_step3 = st.columns(3)
-with col_step1:
-    st.markdown("**1. เตรียมตารางแม่แบบ**\nตรวจสอบให้แน่ใจว่าตารางในระบบมีรายชื่อพนักงานแล้ว หรือกดดาวน์โหลดแม่แบบด้านล่างไปเตรียมข้อมูล")
-with col_step2:
-    st.markdown("**2. อัปโหลดไฟล์ข้อมูลดิบ**\nนำไฟล์ข้อมูลดิบที่ได้มาจากแผนกอื่น (เช่น ไฟล์สรุปยอดค่านายหน้าประจำเดือน) มาวางในระบบ")
-with col_step3:
-    st.markdown("**3. ตรวจสอบและดาวน์โหลด**\nระบบ AI จะคำนวณและกรอกข้อมูลให้ตรงแถวของพนักงานคนนั้น ๆ คุณสามารถตรวจทานและโหลดไฟล์ได้ทันที")
+# ส่วนหัวโปรแกรมเด่นชัด สไตล์แอปพลิเคชันสมัยใหม่
+st.markdown('<div class="main-title">🤖 HR AI Automation System</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">ระบบผู้ช่วยอัจฉริยะ คัดแยกประเภทเอกสารรายได้ และคีย์ข้อมูลลงตารางพนักงานอัตโนมัติ</div>', unsafe_allow_html=True)
 
-# สร้างปุ่มให้กดดาวน์โหลดเทมเพลตต้นแบบจากหน้าเว็บได้เลย
-templates_available = learn_templates()
-if templates_available:
-    selected_t_download = st.selectbox("เลือกไฟล์เทมเพลตที่ต้องการดาวน์โหลดไปใช้งานตั้งต้น:", list(templates_available.keys()))
-    t_download_path = os.path.join(TEMPLATES_FOLDER, selected_t_download)
-    with open(t_download_path, "rb") as f:
-        st.download_button(
-            label=f"📥 ดาวน์โหลดไฟล์แม่แบบ: {selected_t_download}",
-            data=f,
-            file_name=selected_t_download,
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-st.write("---")
+# การจัดวางขั้นตอนการทำงาน 3 สเต็ปให้อ่านง่าย
+st.markdown("### 📋 ขั้นตอนการทำงานง่าย ๆ ใน 3 สเต็ป")
+col_s1, col_s2, col_s3 = st.columns(3)
+with col_s1:
+    st.markdown('<div class="step-box"><b>1. ตรวจสอบแม่แบบ</b><br>ระบบจะดึงไฟล์ตารางพนักงานหลักจากระบบหลังบ้านมาเตรียมรอไว้ หากยังไม่มีข้อมูลพนักงานสามารถดาวน์โหลดตารางไปกรอกก่อนได้</div>', unsafe_allow_html=True)
+with col_s2:
+    st.markdown('<div class="step-box"><b>2. อัปโหลดหลักฐานดิบ</b><br>โยนไฟล์ Excel รายได้ หรือถ่ายรูปรูปภาพสรุปยอดคอมมิชชั่น / OT ที่ได้มาจากไลน์หรือแผนกอื่น ๆ เข้าสู่ระบบได้ทันที</div>', unsafe_allow_html=True)
+with col_s3:
+    st.markdown('<div class="step-box"><b>3. AI คีย์ให้อัตโนมัติ</b><br>สมองกล AI จะอ่านสแกนชื่อและรหัสพนักงาน แล้วนำตัวเลขไปหยอดในช่องที่เว้นว่างไว้ของคนๆ นั้นให้ตรงแถวเป๊ะๆ</div>', unsafe_allow_html=True)
 
-# ส่วนที่ 2: ช่องอัปโหลดไฟล์งานจริง
-st.subheader("📤 ส่วนอัปโหลดไฟล์งานเพื่อคีย์ข้อมูล")
-uploaded_file = st.file_uploader("ลากไฟล์ข้อมูลดิบ (เช่น ไฟล์ Excel ยอดคอมมิชชั่น หรือไฟล์สรุปโอทีประจำเดือน) มาวางตรงนี้ได้เลยครับ", type=["xlsx", "xls"])
+st.write("")
+st.write("")
 
-if uploaded_file is not None:
-    st.info(f"📂 รับไฟล์สำเร็จ: {uploaded_file.name} กำลังเตรียมความพร้อมของระบบ...")
+# สร้างพื้นที่แบ่งหน้าจอซ้าย-ขวา (Layout Columns) เพื่อเพิ่มความโปร
+col_left, col_right = st.columns([1, 2], gap="large")
+
+with col_left:
+    st.markdown("### 📥 คลังตารางแม่แบบ (Templates)")
+    templates_available = learn_templates()
     
-    if st.button("🚀 สั่งให้ AI เริ่มคีย์ข้อมูลลงตารางอัตโนมัติ"):
-        if not templates_available:
-            st.error("❌ ไม่พบไฟล์เทมเพลตต้นแบบในระบบหลังบ้าน (โฟลเดอร์ hr_templates/) กรุณาตรวจสอบไฟล์บน GitHub")
-        else:
-            with st.spinner("🤖 AI กำลังเปิดอ่านเนื้อหาในไฟล์ คัดแยกประเภท และจับคู่ข้อมูลพนักงานอย่างละเอียด โปรดรอสักครู่..."):
-                try:
-                    # 1. แกะข้อมูลจากไฟล์ดิบที่อัปโหลดแปลงเป็น Text
-                    wb_in = load_workbook(uploaded_file, data_only=True)
-                    input_text = ""
-                    for sheet_name in wb_in.sheetnames:
-                        ws_in = wb_in[sheet_name]
-                        input_text += f"\n[หน้าตาราง: {sheet_name}]\n"
-                        for row in ws_in.iter_rows(values_only=True):
-                            row_clean = [str(c).strip() for c in row if c is not None and str(c).strip() != ""]
-                            if row_clean:
-                                input_text += " | ".join(row_clean) + "\n"
+    if templates_available:
+        st.success(f"🟢 ระบบตรวจพบตารางพร้อมใช้งาน {len(templates_available)} ไฟล์")
+        selected_t_download = st.selectbox("เลือกตารางแม่แบบเพื่อดูโครงสร้าง:", list(templates_available.keys()))
+        
+        # แสดงโครงสร้างคอลัมน์ให้ HR มั่นใจว่าตารางมีหัวข้ออะไรบ้าง
+        st.caption(f"คอลัมน์ในตาราง: {str(templates_available[selected_t_download]['headers'])}")
+        
+        t_download_path = os.path.join(TEMPLATES_FOLDER, selected_t_download)
+        with open(t_download_path, "rb") as f:
+            st.download_button(
+                label=f"📥 ดาวน์โหลดไฟล์แม่แบบนี้ไปใช้",
+                data=f,
+                file_name=selected_t_download,
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True
+            )
+    else:
+        st.warning("⚠️ ไม่พบไฟล์ตารางในโฟลเดอร์ hr_templates")
 
-                    # 2. ป้อนข้อมูลส่งให้สมองกล Gemini วิเคราะห์จับคู่ความหมาย
+with col_right:
+    st.markdown("### 📤 นำเข้าข้อมูลดิบเพื่อประมวลผล")
+    uploaded_file = st.file_uploader(
+        "ลากไฟล์ข้อมูลรายได้มาวางตรงนี้ (รองรับ Excel: .xlsx และไฟล์รูปภาพ: .png, .jpg, .jpeg)", 
+        type=["xlsx", "xls", "png", "jpg", "jpeg"]
+    )
+    
+    if uploaded_file is not None:
+        file_ext = uploaded_file.name.split(".")[-1].lower()
+        is_image = file_ext in ["png", "jpg", "jpeg"]
+        
+        # กล่องแสดงรายละเอียดไฟล์อัปโหลดให้ดูสวยเรียบหรู
+        with st.container(border=True):
+            st.markdown(f"**📄 ชื่อไฟล์:** `{uploaded_file.name}` | **ประเภท:** `{file_ext.upper()}`")
+            if is_image:
+                image_obj = Image.open(uploaded_file)
+                st.image(image_obj, caption="🖼️ พรีวิวรูปภาพหลักฐานที่นำเข้าสู่ระบบ", width=350)
+        
+        st.write("")
+        # ปุ่มกดเริ่มรันสีน้ำเงินเด่นชัด
+        if st.button("🚀 สั่งให้ AI เริ่มแมตช์และคีย์ข้อมูลลงตาราง", use_container_width=True):
+            with st.spinner("🤖 AI กำลังกวาดสายตาอ่านข้อมูลและประมวลผลลงช่องตาราง... โปรดรอสักครู่"):
+                try:
+                    ai_contents = []
+                    if is_image:
+                        uploaded_file.seek(0)
+                        ai_contents.append(Image.open(uploaded_file))
+                        input_desc = "รูปภาพหลักฐาน"
+                    else:
+                        wb_in = load_workbook(uploaded_file, data_only=True)
+                        input_text = ""
+                        for sheet_name in wb_in.sheetnames:
+                            ws_in = wb_in[sheet_name]
+                            input_text += f"\n[หน้าตาราง: {sheet_name}]\n"
+                            for row in ws_in.iter_rows(values_only=True):
+                                row_clean = [str(c).strip() for c in row if c is not None and str(c).strip() != ""]
+                                if row_clean:
+                                    input_text += " | ".join(row_clean) + "\n"
+                        ai_contents.append(f"[ข้อมูลเอกสารดิบ]\n{input_text}")
+                        input_desc = "ตาราง Excel อินพุต"
+
                     blueprint = json.dumps(templates_available, ensure_ascii=False, indent=2)
                     prompt = f"""
-                    คุณคือผู้เชี่ยวชาญด้านระบบ HR Automation หน้าที่ของคุณคือวิเคราะห์ข้อมูลพนักงานจากเอกสารดิบที่แนบมา 
+                    คุณคือผู้เชี่ยวชาญด้านระบบ HR Automation หน้าที่ของคุณคือวิเคราะห์ข้อมูลพนักงานจากเอกสารดิบที่แนบมา
                     แล้วนำข้อมูลไปเติมลงในตารางพนักงานของแต่ละเทมเพลตในจุดที่ข้อมูลยังว่างอยู่ให้ถูกต้องและสมบูรณ์
 
                     นี่คือโครงสร้างตารางและรายชื่อพนักงานปัจจุบันที่มีอยู่ในระบบแยกตามไฟล์เทมเพลตต่างๆ:
                     {blueprint}
 
                     คำสั่ง:
-                    1. วิเคราะห์ว่าข้อมูลอินพุตนี้ สอดคล้องกับไฟล์เทมเพลตไหนมากที่สุด (ตอบชื่อไฟล์ในช่อง "selected_template")
-                    2. ตรวจสอบ 'รหัสพนักงาน' หรือ 'รายชื่อ' เพื่อจับคู่ระหว่างข้อมูลอินพุตกับพนักงานเดิมในตารางให้ตรงคน
-                    3. ดึงค่าในเอกสารดิบที่ตรงกับหัวตารางปลายทาง (เช่น ค่าคอมมิชชั่น หรือ เงินได้) นำไปเติมลงในแถวที่มีตัวเลข "__row_index__" ของพนักงานคนนั้นๆ
+                    1. วิเคราะห์ว่าเนื้อหาข้อมูลอินพุตนี้ สอดคล้องหรือควรนำไปเติมในไฟล์เทมเพลตไหนมากที่สุด (ตอบชื่อไฟล์ในช่อง "selected_template")
+                    2. ตรวจสอบ 'รหัสพนักงาน' หรือ 'รายชื่อ' เพื่อจับคู่ระหว่างข้อมูลในหลักฐานอินพุต กับพนักงานเดิมในตารางให้ตรงคน
+                    3. ดึงค่าในเอกสารดิบ/รูปภาพที่ตรงกับหัวตารางปลายทาง (เช่น ค่าคอมมิชชั่น, OT) นำไปเติมลงในแถวที่มีตัวเลข "__row_index__" ของพนักงานคนนั้นๆ
 
                     ให้ตอบกลับเป็นรูปแบบ JSON โครงสร้างแบบนี้เท่านั้น ห้ามมีคำอธิบายอื่นเด็ดขาด:
                     {{
@@ -134,11 +209,11 @@ if uploaded_file is not None:
                     }}
                     """
                     
-                    response = client.models.generate_content(model='gemini-2.5-flash', contents=f"{prompt}\n\n[ข้อมูลเอกสารดิบ]\n{input_text}")
+                    ai_contents.insert(0, prompt)
+                    response = client.models.generate_content(model='gemini-2.5-flash', contents=ai_contents)
                     clean_text = response.text.replace("```json", "").replace("```", "").strip()
                     ai_result = json.loads(clean_text)
                     
-                    # 3. นำผลลัพธ์จาก AI มากรอกลงตาราง Excel ต้นฉบับ
                     template_name = ai_result.get("selected_template")
                     updates = ai_result.get("updates", [])
                     
@@ -159,30 +234,42 @@ if uploaded_file is not None:
                         for h_name, new_val in data_to_fill.items():
                             if h_name in header_map:
                                 ws_target.cell(row=r_idx, column=header_map[h_name]).value = new_value
-                                preview_data.append({"แถวที่": r_idx, "พนักงาน": emp_name_str, "หัวข้อที่เติม": h_name, "จำนวนเงิน/ข้อมูล": new_value})
+                                preview_data.append({
+                                    "แถอร์ตารางที่": r_idx, 
+                                    "รายชื่อพนักงาน": emp_name_str, 
+                                    "หัวข้อคอลัมน์ที่เติม": h_name, 
+                                    "จำนวนเงิน / ข้อมูลใหม่": new_val
+                                })
 
                     if preview_data:
-                        st.success(f"🎯 AI วิเคราะห์สำเร็จ! ข้อมูลนี้สอดคล้องกับตาราง '{template_name}' และทำการจับคู่กรอกข้อมูลให้พนักงานเรียบร้อยแล้ว")
+                        # แสดงกล่องแจ้งผลการรันสำเร็จอย่างสวยงาม
+                        st.balloons()
+                        st.success(f"🎯 AI วิเคราะห์สำเร็จ! นำข้อมูลจาก {input_desc} วิ่งไปกรอกลงไฟล์ '{template_name}' เรียบร้อยแล้วค่ะ")
                         
-                        # แสดงผลลัพธ์เป็นตารางจำลองให้ User ตรวจทานความถูกต้องก่อนดาวน์โหลด
-                        st.subheader("👀 ตารางตรวจทานความถูกต้อง (Preview)")
-                        st.dataframe(pd.DataFrame(preview_data), use_container_width=True)
+                        # แสดงตาราง Preview ผลงานการคีย์ข้อมูลแบบมืออาชีพ
+                        st.markdown("### 👀 ตารางสรุปผลข้อมูลที่ถูกอัปเดต (Data Preview)")
+                        df_preview = pd.DataFrame(preview_data)
+                        st.dataframe(
+                            df_preview.style.set_properties(**{'background-color': '#EFF6FF', 'color': '#1E3A8A'}),
+                            use_container_width=True,
+                            hide_index=True
+                        )
                         
-                        # เซฟไฟล์ลง Memory
                         out_stream = io.BytesIO()
                         wb_target.save(out_stream)
                         out_stream.seek(0)
                         
-                        st.write("---")
+                        st.write("")
+                        # ปุ่มดาวน์โหลดเด่นหรู
                         st.download_button(
-                            label="📥 คลิกที่นี่เพื่อดาวน์โหลดไฟล์ Excel ที่คีย์ข้อมูลเสร็จแล้ว",
+                            label="📥 คลิกตรงนี้เพื่อดาวน์โหลดไฟล์ Excel ปลายทางที่กรอกข้อมูลเสร็จสมบูรณ์",
                             data=out_stream,
-                            file_name=f"HR_SUCCESS_{template_name}",
-                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            file_name=f"HR_UPDATED_{template_name}",
+                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            use_container_width=True
                         )
                     else:
-                        st.warning("⚠️ AI อ่านไฟล์ได้ แต่ไม่พบรายชื่อพนักงานหรือรหัสพนักงานที่ตรงกับตารางแม่แบบในระบบเลย กรุณาตรวจสอบความถูกต้องของไฟล์อินพุต")
+                        st.warning("⚠️ AI ตรวจสอบไฟล์แล้ว แต่ไม่พบรายชื่อพนักงานคนไหนในหลักฐานตรงกับรายชื่อพนักงานในระบบเลย กรุณาตรวจสอบรายชื่ออีกครั้ง")
                         
                 except Exception as e:
                     st.error(f"❌ เกิดข้อผิดพลาดในการประมวลผลระบบ: {e}")
-                    st.info("💡 คำแนะนำ: กรุณากดปุ่มเพื่อลองใหม่อีกครั้ง")
