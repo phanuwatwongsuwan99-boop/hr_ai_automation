@@ -18,13 +18,21 @@ except Exception as e:
     st.stop()
 
 # โฟลเดอร์ที่ต้องใช้ในระบบ
-TEMPLATES_FOLDER = "hr_templates"
+def learn_templates():
+    structures = {}
+    if not os.path.exists(TEMPLATES_FOLDER):
+        return structures
 
 # ... โค้ดส่วนที่เหลือด้านล่างปล่อยไว้เหมือนเดิมได้เลยครับ ...
         
     print("🤖 [ระบบเรียนรู้] กำลังอ่านโครงสร้างคอลัมน์และรายชื่อพนักงาน...")
-    for filename in os.listdir(templates_folder):
+    
+    for filename in os.listdir(TEMPLATES_FOLDER):
         if filename.endswith((".xlsx", ".xls")) and not filename.startswith((".", "~$")):
+            try:
+                # ด้านใน try ต้องเยื้องเข้าไปอีก 4 ช่อง (รวมเป็น 16 ช่องจากซ้ายสุด)
+                wb = load_workbook(os.path.join(TEMPLATES_FOLDER, filename), data_only=True)
+                ws = wb.active
             
             # ตรวจสอบก่อนว่าเคยรันไฟล์นี้ไปแล้วหรือยังในโฟลเดอร์ Output 
             # ถ้าเคยรันแล้ว จะหยิบไฟล์ล่าสุดจาก Output มาใช้เรียนรู้ต่อ เพื่อป้องกันการเขียนทับกันมั่ว
