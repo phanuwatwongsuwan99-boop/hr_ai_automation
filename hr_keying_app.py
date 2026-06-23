@@ -7,49 +7,93 @@ from openpyxl import load_workbook
 import pandas as pd
 from PIL import Image
 
-# 1. ตั้งค่าโครงสร้างหน้าเว็บและธีมส่วนหัว
+# 1. ตั้งค่าโครงสร้างหน้าเว็บสไตล์ Global Dashboard
 st.set_page_config(
-    page_title="HR AI Automation System", 
-    page_icon="🤖", 
+    page_title="HR Smart Matrix - AI Automation", 
+    page_icon="⚡", 
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# ตกแต่ง CSS ตกแต่งปุ่มและฟอนต์เพิ่มเติมให้ดูพรีเมียมขึ้น
+# ตกแต่ง CSS ให้ดูทันสมัย ระดับสากล (Clean, Modern, Corporate)
 st.markdown("""
     <style>
-    .main-title {
-        font-size: 2.5rem !important;
-        font-weight: 700 !important;
-        color: #1E3A8A;
-        margin-bottom: 5px;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
     }
-    .sub-title {
-        font-size: 1.1rem !important;
-        color: #4B5563;
-        margin-bottom: 25px;
+    .main-header {
+        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+        padding: 30px;
+        border-radius: 16px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
-    .step-box {
+    .card-box {
+        background-color: #FFFFFF;
+        padding: 24px;
+        border-radius: 14px;
+        border: 1px solid #E5E7EB;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+    .badge-personal {
+        background-color: #E0F2FE;
+        color: #0369A1;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-block;
+        border: 1px solid #BAE6FD;
+    }
+    .badge-commission {
+        background-color: #DCFCE7;
+        color: #15803D;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-block;
+        border: 1px solid #BBF7D0;
+    }
+    .badge-ot {
+        background-color: #F3E8FF;
+        color: #6B21A8;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-block;
+        border: 1px solid #E9D5FF;
+    }
+    .badge-generic {
         background-color: #F3F4F6;
-        padding: 20px;
-        border-radius: 12px;
-        border-left: 5px solid #3B82F6;
-        height: 100%;
+        color: #374151;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-block;
+        border: 1px solid #E5E7EB;
     }
     div.stButton > button:first-child {
-        background-color: #1E3A8A !important;
+        background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%) !important;
         color: white !important;
-        border-radius: 8px !important;
+        border-radius: 10px !important;
         font-size: 16px !important;
         font-weight: 600 !important;
-        padding: 10px 24px !important;
+        padding: 12px 30px !important;
         border: none !important;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1) !important;
-        transition: all 0.2s !important;
+        width: 100% !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
+        transition: all 0.3s ease !important;
     }
     div.stButton > button:first-child:hover {
-        background-color: #2563EB !important;
-        transform: translateY(-1px) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -64,7 +108,6 @@ except Exception as e:
 
 TEMPLATES_FOLDER = "hr_templates"
 
-# ฟังก์ชันเรียนรู้โครงสร้างคอลัมน์
 def learn_templates():
     structures = {}
     if not os.path.exists(TEMPLATES_FOLDER):
@@ -96,66 +139,71 @@ def learn_templates():
                 pass
     return structures
 
-# --- ส่วนจัดแสดงหน้าต่างเว็บแอป (UI) ---
+# --- ส่วนการแสดงผล (Global UI) ---
 
-st.markdown('<div class="main-title">🤖 HR AI Automation System</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">ระบบผู้ช่วยอัจฉริยะ คัดแยกประเภทเอกสารรายได้ และคีย์ข้อมูลลงตารางพนักงานอัตโนมัติ</div>', unsafe_allow_html=True)
+# แถบหัวข้อใหญ่หรูหราสไตล์เว็บอินเตอร์
+st.markdown("""
+    <div class="main-header">
+        <h1 style='margin:0; font-size:2.2rem; font-weight:700;'>⚡ HR Smart Matrix Hub</h1>
+        <p style='margin:5px 0 0 0; opacity:0.85; font-size:1rem;'>ระบบประมวลผลและคัดแยกหมวดหมู่เอกสารพนักงานอัจฉริยะด้วยสมองกล AI</p>
+    </div>
+""", unsafe_allow_html=True)
 
-st.markdown("### 📋 ขั้นตอนการทำงานง่าย ๆ ใน 3 สเต็ป")
-col_s1, col_s2, col_s3 = st.columns(3)
-with col_s1:
-    st.markdown('<div class="step-box"><b>1. ตรวจสอบแม่แบบ</b><br>ระบบจะดึงไฟล์ตารางพนักงานหลักจากระบบหลังบ้านมาเตรียมรอไว้ หากยังไม่มีข้อมูลพนักงานสามารถดาวน์โหลดตารางไปกรอกก่อนได้</div>', unsafe_allow_html=True)
-with col_s2:
-    st.markdown('<div class="step-box"><b>2. อัปโหลดหลักฐานดิบ</b><br>โยนไฟล์ Excel รายได้ หรือถ่ายรูปรูปภาพสรุปยอดคอมมิชชั่น / OT ที่ได้มาจากไลน์หรือแผนกอื่น ๆ เข้าสู่ระบบได้ทันที</div>', unsafe_allow_html=True)
-with col_s3:
-    st.markdown('<div class="step-box"><b>3. AI คีย์ให้อัตโนมัติ</b><br>สมองกล AI จะอ่านสแกนชื่อและรหัสพนักงาน แล้วนำตัวเลขไปหยอดในช่องที่เว้นว่างไว้ของคนๆ นั้นให้ตรงแถวเป๊ะๆ</div>', unsafe_allow_html=True)
+templates_available = learn_templates()
 
-st.write("")
-st.write("")
+# ใช้ระบบ Grid แบ่งซ้าย-ขวาแบบ Dashboard สากล
+col_control, col_display = st.columns([1, 2], gap="large")
 
-col_left, col_right = st.columns([1, 2], gap="large")
-
-with col_left:
-    st.markdown("### 📥 คลังตารางแม่แบบ (Templates)")
-    templates_available = learn_templates()
+# 🖥️ ฝั่งซ้าย: แผงควบคุมและจัดการไฟล์ (Control Workspace)
+with col_control:
+    st.markdown("### 🎛️ แผงควบคุมระบบ (Workspace)")
     
-    if templates_available:
-        st.success(f"🟢 ระบบตรวจพบตารางพร้อมใช้งาน {len(templates_available)} ไฟล์")
-        selected_t_download = st.selectbox("เลือกตารางแม่แบบเพื่อดูโครงสร้าง:", list(templates_available.keys()))
-        st.caption(f"คอลัมน์ในตาราง: {str(templates_available[selected_t_download]['headers'])}")
-        
-        t_download_path = os.path.join(TEMPLATES_FOLDER, selected_t_download)
-        with open(t_download_path, "rb") as f:
-            st.download_button(
-                label=f"📥 ดาวน์โหลดไฟล์แม่แบบนี้ไปใช้",
-                data=f,
-                file_name=selected_t_download,
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                use_container_width=True
-            )
-    else:
-        st.warning("⚠️ ไม่พบไฟล์ตารางในโฟลเดอร์ hr_templates")
+    with st.container():
+        st.markdown('<div class="card-box">', unsafe_allow_html=True)
+        st.markdown("📂 **1. คลังตารางแม่แบบปลายทาง**")
+        if templates_available:
+            selected_t_download = st.selectbox("เลือกแม่แบบเพื่อตรวจสอบ:", list(templates_available.keys()))
+            st.caption(f"📌 คอลัมน์ที่ตรวจพบ: {', '.join(templates_available[selected_t_download]['headers'])}")
+            
+            t_download_path = os.path.join(TEMPLATES_FOLDER, selected_t_download)
+            with open(t_download_path, "rb") as f:
+                st.download_button(
+                    label="📥 ดาวน์โหลดตารางแม่แบบเปล่า",
+                    data=f,
+                    file_name=selected_t_download,
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    key="dl_btn"
+                )
+        else:
+            st.error("ไม่พบไฟล์แม่แบบในระบบหลังบ้าน")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-with col_right:
-    st.markdown("### 📤 นำเข้าข้อมูลดิบเพื่อประมวลผล")
-    uploaded_file = st.file_uploader(
-        "ลากไฟล์ข้อมูลรายได้มาวางตรงนี้ (รองรับ Excel: .xlsx และไฟล์รูปภาพ: .png, .jpg, .jpeg)", 
-        type=["xlsx", "xls", "png", "jpg", "jpeg"]
-    )
-    
-    if uploaded_file is not None:
-        file_ext = uploaded_file.name.split(".")[-1].lower()
-        is_image = file_ext in ["png", "jpg", "jpeg"]
+    with st.container():
+        st.markdown('<div class="card-box">', unsafe_allow_html=True)
+        st.markdown("📤 **2. นำเข้าไฟล์หลักฐานดิบ**")
+        uploaded_file = st.file_uploader(
+            "ลากและวางหลักฐานตรงนี้ (.xlsx, .png, .jpg, .jpeg)", 
+            type=["xlsx", "xls", "png", "jpg", "jpeg"]
+        )
         
-        with st.container(border=True):
-            st.markdown(f"**📄 ชื่อไฟล์:** `{uploaded_file.name}` | **ประเภท:** `{file_ext.upper()}`")
+        if uploaded_file is not None:
+            file_ext = uploaded_file.name.split(".")[-1].lower()
+            is_image = file_ext in ["png", "jpg", "jpeg"]
+            st.caption(f"⚡ พร้อมประมวลผลไฟล์: {uploaded_file.name}")
             if is_image:
                 image_obj = Image.open(uploaded_file)
-                st.image(image_obj, caption="🖼️ พรีวิวรูปภาพหลักฐานที่นำเข้าสู่ระบบ", width=350)
-        
-        st.write("")
-        if st.button("🚀 สั่งให้ AI เริ่มแมตช์และคีย์ข้อมูลลงตาราง", use_container_width=True):
-            with st.spinner("🤖 AI กำลังกวาดสายตาอ่านข้อมูลและประมวลผลลงช่องตาราง... โปรดรอสักครู่"):
+                st.image(image_obj, caption="พรีวิวหลักฐาน", use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# 📊 ฝั่งขวา: พื้นที่จัดแสดงผลลัพธ์และคัดแยกหมวดหมู่ (Result Workspace)
+with col_display:
+    st.markdown("### 📑 ผลการวิเคราะห์และคัดแยกหมวดหมู่ (Analysis Output)")
+    
+    if uploaded_file is None:
+        st.info("💡 ระบบสแตนด์บาย: กรุณาอัปโหลดไฟล์หลักฐานและกดปุ่มประมวลผลที่แผงควบคุมด้านซ้ายมือเพื่อเริ่มงานค่ะ")
+    else:
+        if st.button("🚀 เริ่มวิเคราะห์ข้อมูลสัมพันธ์ด้วย AI"):
+            with st.spinner("🤖 AI กำลังสแกนตรวจสอบประเภทข้อมูล คัดแยกหมวดหมู่ และลงบันทึกช่องตาราง..."):
                 try:
                     ai_contents = []
                     if is_image:
@@ -176,6 +224,8 @@ with col_right:
                         input_desc = "ตาราง Excel อินพุต"
 
                     blueprint = json.dumps(templates_available, ensure_ascii=False, indent=2)
+                    
+                    # สั่งให้ AI คัดแยกหมวดหมู่เอกสารเพิ่มเข้ามาในโครงสร้าง JSON ปลายทางด้วย
                     prompt = f"""
                     คุณคือผู้เชี่ยวชาญด้านระบบ HR Automation หน้าที่ของคุณคือวิเคราะห์ข้อมูลพนักงานจากเอกสารดิบที่แนบมา
                     แล้วนำข้อมูลไปเติมลงในตารางพนักงานของแต่ละเทมเพลตในจุดที่ข้อมูลยังว่างอยู่ให้ถูกต้องและสมบูรณ์
@@ -183,13 +233,18 @@ with col_right:
                     นี่คือโครงสร้างตารางและรายชื่อพนักงานปัจจุบันที่มีอยู่ในระบบแยกตามไฟล์เทมเพลตต่างๆ:
                     {blueprint}
 
-                    คำสั่ง:
-                    1. วิเคราะห์ว่าเนื้อหาข้อมูลอินพุตนี้ สอดคล้องหรือควรนำไปเติมในไฟล์เทมเพลตไหนมากที่สุด (ตอบชื่อไฟล์ในช่อง "selected_template")
-                    2. ตรวจสอบ 'รหัสพนักงาน' หรือ 'รายชื่อ' เพื่อจับคู่ระหว่างข้อมูลในหลักฐานอินพุต กับพนักงานเดิมในตารางให้ตรงคน
-                    3. ดึงค่าในเอกสารดิบ/รูปภาพที่ตรงกับหัวตารางปลายทาง (เช่น ค่าคอมมิชชั่น, OT) นำไปเติมลงในแถวที่มีตัวเลข "__row_index__" ของพนักงานคนนั้นๆ
+                    คำสั่งในการวิเคราะห์:
+                    1. ตรวจสอบเนื้อหาของเอกสารดิบ/รูปภาพ แล้วระบุว่ามันเป็นเอกสาร "หมวดหมู่ (Category)" ใด โดยเลือกจากหมวดหมู่เหล่านี้เท่านั้น:
+                       - "PERSONAL_DATA" (หากเป็นบัตรประชาชน, ทะเบียนบ้าน, ใบขับขี่, ข้อมูลส่วนตัว)
+                       - "COMMISSION" (หากเป็นไฟล์ค่าคอมมิชชั่น, ยอดขาย, ค่านายหน้า)
+                       - "OVERTIME" (หากเป็นเวลาเข้างาน, สรุปโอที, ข้อมูลเวลาทำงาน)
+                       - "GENERIC_HR" (หากเป็นเอกสารอื่นๆ)
+                    2. วิเคราะห์ว่าเนื้อหาข้อมูลอินพุตนี้ สอดคล้องหรือควรนำไปเติมในไฟล์เทมเพลตไหนมากที่สุด (ตอบชื่อไฟล์ในช่อง "selected_template")
+                    3. จับคู่รหัสหรือชื่อพนักงาน แล้วนำค่าไปเติมลงในแถวที่มีตัวเลข "__row_index__" ของพนักงานคนนั้นๆ
 
                     ให้ตอบกลับเป็นรูปแบบ JSON โครงสร้างแบบนี้เท่านั้น ห้ามมีคำอธิบายอื่นเด็ดขาด:
                     {{
+                      "category": "หมวดหมู่ที่เลือกตามข้อ 1 เช่น COMMISSION",
                       "selected_template": "ชื่อไฟล์เทมเพลตปลายทาง.xlsx",
                       "updates": [
                          {{
@@ -207,9 +262,24 @@ with col_right:
                     clean_text = response.text.replace("```json", "").replace("```", "").strip()
                     ai_result = json.loads(clean_text)
                     
+                    category = ai_result.get("category", "GENERIC_HR")
                     template_name = ai_result.get("selected_template")
                     updates = ai_result.get("updates", [])
                     
+                    # ส่วนแสดงกล่องหมวดหมู่สีสวยงามบนหน้าเว็บแอป (UX Highlight)
+                    st.markdown("#### 🎯 ผลการคัดแยกหมวดหมู่เอกสาร")
+                    if category == "PERSONAL_DATA":
+                        st.markdown('<span class="badge-personal">🆔 หมวดหมู่: ข้อมูลส่วนตัว / บัตรประชาชนพนักงาน</span>', unsafe_allow_html=True)
+                    elif category == "COMMISSION":
+                        st.markdown('<span class="badge-commission">💰 หมวดหมู่: รายได้ / ค่าคอมมิชชั่นพนักงาน</span>', unsafe_allow_html=True)
+                    elif category == "OVERTIME":
+                        st.markdown('<span class="badge-ot">⏱️ หมวดหมู่: เวลาทำงาน / ข้อมูลโอที (OT)</span>', unsafe_allow_html=True)
+                    else:
+                        st.markdown('<span class="badge-generic">📦 หมวดหมู่: เอกสารทั่วไป / ทั่วไปในระบบ HR</span>', unsafe_allow_html=True)
+                        
+                    st.write("")
+                    
+                    # ดำเนินการคีย์ข้อมูลลงไฟล์ Excel
                     template_path = os.path.join(TEMPLATES_FOLDER, template_name)
                     wb_target = load_workbook(template_path)
                     ws_target = wb_target.active
@@ -226,23 +296,22 @@ with col_right:
                         
                         for h_name, new_val in data_to_fill.items():
                             if h_name in header_map:
-                                # --- แก้ไขจุดบั๊กจาก new_value เป็น new_val เรียบร้อยครับ ---
                                 ws_target.cell(row=r_idx, column=header_map[h_name]).value = new_val
                                 preview_data.append({
-                                    "แถวตารางที่": r_idx, 
+                                    "แถวที่": r_idx, 
                                     "รายชื่อพนักงาน": emp_name_str, 
-                                    "หัวข้อคอลัมน์ที่เติม": h_name, 
-                                    "จำนวนเงิน / ข้อมูลใหม่": new_val
+                                    "คอลัมน์ที่คีย์ลงตาราง": h_name, 
+                                    "ข้อมูลที่เติมสำเร็จ": new_val
                                 })
 
                     if preview_data:
                         st.balloons()
-                        st.success(f"🎯 AI วิเคราะห์สำเร็จ! นำข้อมูลจาก {input_desc} วิ่งไปกรอกลงไฟล์ '{template_name}' เรียบร้อยแล้วค่ะ")
+                        st.success(f"กรอกข้อมูลลงในไฟล์ตารางหลัก '{template_name}' สำเร็จแล้วค่ะ")
                         
-                        st.markdown("### 👀 ตารางสรุปผลข้อมูลที่ถูกอัปเดต (Data Preview)")
+                        st.markdown("#### 👀 ตารางตรวจสอบความถูกต้องก่อนบันทึก (Preview)")
                         df_preview = pd.DataFrame(preview_data)
                         st.dataframe(
-                            df_preview.style.set_properties(**{'background-color': '#EFF6FF', 'color': '#1E3A8A'}),
+                            df_preview.style.set_properties(**{'background-color': '#FAFAFA', 'color': '#0F172A'}),
                             use_container_width=True,
                             hide_index=True
                         )
@@ -251,16 +320,16 @@ with col_right:
                         wb_target.save(out_stream)
                         out_stream.seek(0)
                         
-                        st.write("")
+                        st.markdown("#### 📥 ดาวน์โหลดผลลัพธ์เพื่อนำไปใช้งาน")
                         st.download_button(
-                            label="📥 คลิกตรงนี้เพื่อดาวน์โหลดไฟล์ Excel ปลายทางที่กรอกข้อมูลเสร็จสมบูรณ์",
+                            label="📥 คลิกตรงนี้เพื่อโหลดไฟล์ Excel สำเร็จรูป",
                             data=out_stream,
-                            file_name=f"HR_UPDATED_{template_name}",
+                            file_name=f"HR_EXPORT_{template_name}",
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             use_container_width=True
                         )
                     else:
-                        st.warning("⚠️ AI ตรวจสอบไฟล์แล้ว แต่ไม่พบรายชื่อพนักงานคนไหนในหลักฐานตรงกับรายชื่อพนักงานในระบบเลย กรุณาตรวจสอบรายชื่ออีกครั้ง")
+                        st.warning("⚠️ AI ตรวจสอบเอกสารนี้แล้ว แต่ไม่พบรายชื่อพนักงานคนไหนในหลักฐานตรงกับรายชื่อพนักงานในระบบเลย กรุณาตรวจสอบอีกครั้ง")
                         
                 except Exception as e:
                     st.error(f"❌ เกิดข้อผิดพลาดในการประมวลผลระบบ: {e}")
