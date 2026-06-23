@@ -7,7 +7,7 @@ from PIL import Image
 from pypdf import PdfReader
 
 # 1. ตั้งค่า API Key ของ Gemini
-GEMINI_API_KEY = st.secrets["AQ.Ab8RN6I7N8LU0znffe50D5BaQuc8VL9M5SpUlM9w-wRHOendew"]
+GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 # 2. ฟังก์ชันเรียนรู้ตาราง (รองรับการดึงประวัติจากโฟลเดอร์ Output มารวมด้วยเพื่อไม่ให้รวน)
