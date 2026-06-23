@@ -98,11 +98,9 @@ def learn_templates():
 
 # --- ส่วนจัดแสดงหน้าต่างเว็บแอป (UI) ---
 
-# ส่วนหัวโปรแกรมเด่นชัด สไตล์แอปพลิเคชันสมัยใหม่
 st.markdown('<div class="main-title">🤖 HR AI Automation System</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-title">ระบบผู้ช่วยอัจฉริยะ คัดแยกประเภทเอกสารรายได้ และคีย์ข้อมูลลงตารางพนักงานอัตโนมัติ</div>', unsafe_allow_html=True)
 
-# การจัดวางขั้นตอนการทำงาน 3 สเต็ปให้อ่านง่าย
 st.markdown("### 📋 ขั้นตอนการทำงานง่าย ๆ ใน 3 สเต็ป")
 col_s1, col_s2, col_s3 = st.columns(3)
 with col_s1:
@@ -115,7 +113,6 @@ with col_s3:
 st.write("")
 st.write("")
 
-# สร้างพื้นที่แบ่งหน้าจอซ้าย-ขวา (Layout Columns) เพื่อเพิ่มความโปร
 col_left, col_right = st.columns([1, 2], gap="large")
 
 with col_left:
@@ -125,8 +122,6 @@ with col_left:
     if templates_available:
         st.success(f"🟢 ระบบตรวจพบตารางพร้อมใช้งาน {len(templates_available)} ไฟล์")
         selected_t_download = st.selectbox("เลือกตารางแม่แบบเพื่อดูโครงสร้าง:", list(templates_available.keys()))
-        
-        # แสดงโครงสร้างคอลัมน์ให้ HR มั่นใจว่าตารางมีหัวข้ออะไรบ้าง
         st.caption(f"คอลัมน์ในตาราง: {str(templates_available[selected_t_download]['headers'])}")
         
         t_download_path = os.path.join(TEMPLATES_FOLDER, selected_t_download)
@@ -152,7 +147,6 @@ with col_right:
         file_ext = uploaded_file.name.split(".")[-1].lower()
         is_image = file_ext in ["png", "jpg", "jpeg"]
         
-        # กล่องแสดงรายละเอียดไฟล์อัปโหลดให้ดูสวยเรียบหรู
         with st.container(border=True):
             st.markdown(f"**📄 ชื่อไฟล์:** `{uploaded_file.name}` | **ประเภท:** `{file_ext.upper()}`")
             if is_image:
@@ -160,7 +154,6 @@ with col_right:
                 st.image(image_obj, caption="🖼️ พรีวิวรูปภาพหลักฐานที่นำเข้าสู่ระบบ", width=350)
         
         st.write("")
-        # ปุ่มกดเริ่มรันสีน้ำเงินเด่นชัด
         if st.button("🚀 สั่งให้ AI เริ่มแมตช์และคีย์ข้อมูลลงตาราง", use_container_width=True):
             with st.spinner("🤖 AI กำลังกวาดสายตาอ่านข้อมูลและประมวลผลลงช่องตาราง... โปรดรอสักครู่"):
                 try:
@@ -233,20 +226,19 @@ with col_right:
                         
                         for h_name, new_val in data_to_fill.items():
                             if h_name in header_map:
-                                ws_target.cell(row=r_idx, column=header_map[h_name]).value = new_value
+                                # --- แก้ไขจุดบั๊กจาก new_value เป็น new_val เรียบร้อยครับ ---
+                                ws_target.cell(row=r_idx, column=header_map[h_name]).value = new_val
                                 preview_data.append({
-                                    "แถอร์ตารางที่": r_idx, 
+                                    "แถวตารางที่": r_idx, 
                                     "รายชื่อพนักงาน": emp_name_str, 
                                     "หัวข้อคอลัมน์ที่เติม": h_name, 
                                     "จำนวนเงิน / ข้อมูลใหม่": new_val
                                 })
 
                     if preview_data:
-                        # แสดงกล่องแจ้งผลการรันสำเร็จอย่างสวยงาม
                         st.balloons()
                         st.success(f"🎯 AI วิเคราะห์สำเร็จ! นำข้อมูลจาก {input_desc} วิ่งไปกรอกลงไฟล์ '{template_name}' เรียบร้อยแล้วค่ะ")
                         
-                        # แสดงตาราง Preview ผลงานการคีย์ข้อมูลแบบมืออาชีพ
                         st.markdown("### 👀 ตารางสรุปผลข้อมูลที่ถูกอัปเดต (Data Preview)")
                         df_preview = pd.DataFrame(preview_data)
                         st.dataframe(
@@ -260,7 +252,6 @@ with col_right:
                         out_stream.seek(0)
                         
                         st.write("")
-                        # ปุ่มดาวน์โหลดเด่นหรู
                         st.download_button(
                             label="📥 คลิกตรงนี้เพื่อดาวน์โหลดไฟล์ Excel ปลายทางที่กรอกข้อมูลเสร็จสมบูรณ์",
                             data=out_stream,
