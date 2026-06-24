@@ -15,81 +15,213 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ===================== CSS THEME: Indigo & Slate (Premium HR / Enterprise) =====================
-# ปรับโทนสีจาก แดง-ดำ เดิม เป็น Indigo-Slate ซึ่งเป็นโทนมาตรฐานของระบบ HR/Enterprise
-# ให้ความรู้สึกน่าเชื่อถือ สุภาพ อ่านง่าย ไม่ดูเหมือนข้อความเตือน/อันตราย
+# ===================== CSS THEME: Dark / Indigo (อ้างอิงสไตล์ AI Chat tool โทนมืดสนิท) =====================
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
-        background-color: #F8FAFC;
     }
 
-    /* ---------- Header ---------- */
-    .main-header {
-        background: linear-gradient(135deg, #1E293B 0%, #4338CA 100%);
-        padding: 36px 40px;
-        border-radius: 16px;
+    /* ---------- พื้นหลังหลักมืดสนิท ---------- */
+    .stApp {
+        background-color: #0D0D14;
+    }
+    [data-testid="stAppViewContainer"] {
+        background-color: #0D0D14;
+    }
+    [data-testid="stHeader"] {
+        background-color: rgba(0,0,0,0);
+    }
+
+    /* ---------- Sidebar ---------- */
+    [data-testid="stSidebar"] {
+        background-color: #11111A;
+        border-right: 1px solid #23232F;
+    }
+    [data-testid="stSidebar"] * {
+        color: #CBD0DC;
+    }
+    .sb-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 0 18px 0;
+        margin-bottom: 6px;
+        border-bottom: 1px solid #23232F;
+    }
+    .sb-logo-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, #6D5DFB 0%, #8B7CFF 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+    }
+    .sb-logo-text {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: #F4F4F8;
+        letter-spacing: -0.3px;
+    }
+    .sb-section-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: #5C5F70;
+        text-transform: uppercase;
+        margin: 22px 0 10px 0;
+    }
+    .sb-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        margin-bottom: 6px;
+        background: #15151F;
+        border: 1px solid #23232F;
+    }
+    .sb-step.active {
+        background: rgba(109, 93, 251, 0.12);
+        border: 1px solid rgba(109, 93, 251, 0.4);
+    }
+    .sb-step.done {
+        background: rgba(34, 197, 94, 0.07);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+    .sb-step-num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #2A2A38;
+        color: #9799AB;
+        font-size: 0.7rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+    .sb-step.active .sb-step-num { background: #6D5DFB; color: white; }
+    .sb-step.done .sb-step-num { background: #22C55E; color: white; }
+    .sb-step-text {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #E4E5EC;
+        line-height: 1.3;
+    }
+    .sb-step-sub {
+        font-size: 0.74rem;
+        color: #777A8C;
+        margin-top: 2px;
+        line-height: 1.3;
+    }
+    .sb-info-card {
+        background: #15151F;
+        border: 1px solid #23232F;
+        border-radius: 10px;
+        padding: 14px;
+        margin-bottom: 8px;
+    }
+    .sb-info-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.82rem;
+        padding: 4px 0;
+        color: #B6B8C6;
+    }
+    .sb-info-row b { color: #F4F4F8; }
+    .sb-tip {
+        font-size: 0.78rem;
+        color: #9799AB;
+        line-height: 1.5;
+        background: #15151F;
+        border: 1px solid #23232F;
+        border-radius: 10px;
+        padding: 12px 14px;
+    }
+    .sb-pro-card {
+        background: linear-gradient(160deg, #2A1F6B 0%, #6D5DFB 100%);
+        border-radius: 12px;
+        padding: 18px;
+        margin-top: 22px;
         color: white;
-        margin-bottom: 28px;
-        box-shadow: 0 8px 24px rgba(67, 56, 202, 0.18);
+    }
+    .sb-pro-card b { color: white; font-size: 0.95rem; }
+    .sb-pro-card p { font-size: 0.78rem; opacity: 0.85; margin: 6px 0 0 0; }
+
+    /* ---------- Header (เนื้อหาหลัก) ---------- */
+    .main-header {
+        background: linear-gradient(135deg, #15151F 0%, #1B1730 100%);
+        padding: 32px 36px;
+        border-radius: 16px;
+        color: #F4F4F8;
+        margin-bottom: 26px;
+        border: 1px solid #23232F;
         position: relative;
         overflow: hidden;
     }
     .main-header::after {
         content: "";
         position: absolute;
-        top: -40%;
-        right: -10%;
-        width: 260px;
-        height: 260px;
-        background: rgba(255,255,255,0.06);
+        top: -50%;
+        right: -8%;
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(circle, rgba(109,93,251,0.18) 0%, rgba(109,93,251,0) 70%);
         border-radius: 50%;
     }
     .main-header h1 {
         margin: 0;
-        font-size: 2rem;
+        font-size: 1.95rem;
         font-weight: 800;
         letter-spacing: -0.5px;
+        color: #F4F4F8;
     }
     .main-header p {
         margin: 8px 0 0 0;
-        opacity: 0.88;
-        font-size: 1rem;
+        opacity: 0.7;
+        font-size: 0.98rem;
         font-weight: 300;
+        color: #C7C9D6;
     }
 
-    /* ---------- Step Progress Pills ---------- */
+    /* ---------- Step Progress Pills (เนื้อหาหลัก) ---------- */
     .step-track {
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 28px;
+        margin-bottom: 26px;
         flex-wrap: wrap;
     }
     .step-pill {
         display: flex;
         align-items: center;
         gap: 8px;
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
+        background: #15151F;
+        border: 1px solid #23232F;
         border-radius: 999px;
         padding: 8px 18px 8px 10px;
-        font-size: 0.88rem;
+        font-size: 0.86rem;
         font-weight: 600;
-        color: #64748B;
+        color: #777A8C;
     }
     .step-pill.active {
-        background: #EEF2FF;
-        border-color: #C7D2FE;
-        color: #3730A3;
+        background: rgba(109, 93, 251, 0.12);
+        border-color: rgba(109, 93, 251, 0.45);
+        color: #C9C2FF;
     }
     .step-pill.done {
-        background: #F0FDF4;
-        border-color: #BBF7D0;
-        color: #166534;
+        background: rgba(34, 197, 94, 0.08);
+        border-color: rgba(34, 197, 94, 0.3);
+        color: #86EFAC;
     }
     .step-num {
         display: flex;
@@ -98,26 +230,26 @@ st.markdown("""
         width: 22px;
         height: 22px;
         border-radius: 50%;
-        background: #CBD5E1;
-        color: white;
+        background: #2A2A38;
+        color: #C7C9D6;
         font-size: 0.75rem;
         font-weight: 700;
     }
-    .step-pill.active .step-num { background: #4F46E5; }
-    .step-pill.done .step-num { background: #16A34A; }
+    .step-pill.active .step-num { background: #6D5DFB; color: white; }
+    .step-pill.done .step-num { background: #22C55E; color: white; }
     .step-connector {
         width: 24px;
         height: 2px;
-        background: #E2E8F0;
+        background: #23232F;
     }
 
     /* ---------- Card ---------- */
     .card-box {
-        background-color: #FFFFFF;
+        background-color: #14141E;
         padding: 26px 28px;
         border-radius: 14px;
-        border: 1px solid #E5E7EB;
-        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+        border: 1px solid #23232F;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
         margin-bottom: 22px;
     }
     .card-box-header {
@@ -133,29 +265,29 @@ st.markdown("""
         width: 38px;
         height: 38px;
         border-radius: 10px;
-        background: #EEF2FF;
+        background: rgba(109, 93, 251, 0.15);
         font-size: 1.1rem;
         flex-shrink: 0;
     }
     .card-box-title {
         font-size: 1.05rem;
         font-weight: 700;
-        color: #1E293B;
+        color: #F4F4F8;
         margin: 0;
     }
     .card-box-subtitle {
         font-size: 0.85rem;
-        color: #94A3B8;
+        color: #777A8C;
         margin: 2px 0 0 0;
     }
 
     .section-title {
         font-size: 1.15rem;
         font-weight: 700;
-        color: #1E293B;
+        color: #F4F4F8;
         margin-bottom: 16px;
         padding-left: 12px;
-        border-left: 4px solid #4F46E5;
+        border-left: 4px solid #6D5DFB;
     }
 
     /* ---------- Badges (หมวดหมู่เอกสาร) ---------- */
@@ -169,29 +301,29 @@ st.markdown("""
         gap: 8px;
     }
     .badge-personal {
-        background-color: #FEF2F2;
-        color: #991B1B;
-        border: 1px solid #FEE2E2;
+        background-color: rgba(248, 113, 113, 0.1);
+        color: #FCA5A5;
+        border: 1px solid rgba(248, 113, 113, 0.3);
     }
     .badge-commission {
-        background-color: #F0FDF4;
-        color: #166534;
-        border: 1px solid #DCFCE7;
+        background-color: rgba(74, 222, 128, 0.1);
+        color: #86EFAC;
+        border: 1px solid rgba(74, 222, 128, 0.3);
     }
     .badge-ot {
-        background-color: #FFFBEB;
-        color: #92400E;
-        border: 1px solid #FEF3C7;
+        background-color: rgba(251, 191, 36, 0.1);
+        color: #FCD34D;
+        border: 1px solid rgba(251, 191, 36, 0.3);
     }
     .badge-generic {
-        background-color: #EEF2FF;
-        color: #3730A3;
-        border: 1px solid #E0E7FF;
+        background-color: rgba(109, 93, 251, 0.12);
+        color: #C9C2FF;
+        border: 1px solid rgba(109, 93, 251, 0.35);
     }
 
     /* ---------- Buttons ---------- */
     div.stButton > button:first-child {
-        background: linear-gradient(135deg, #4338CA 0%, #4F46E5 100%) !important;
+        background: linear-gradient(135deg, #6D5DFB 0%, #8B7CFF 100%) !important;
         color: white !important;
         border-radius: 10px !important;
         font-size: 16px !important;
@@ -199,20 +331,20 @@ st.markdown("""
         padding: 14px 30px !important;
         border: none !important;
         width: 100% !important;
-        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25) !important;
+        box-shadow: 0 4px 16px rgba(109, 93, 251, 0.3) !important;
         transition: all 0.2s ease !important;
     }
     div.stButton > button:first-child:hover {
-        background: linear-gradient(135deg, #3730A3 0%, #4338CA 100%) !important;
+        background: linear-gradient(135deg, #5B4BF0 0%, #7A6BFF 100%) !important;
         transform: translateY(-1px) !important;
-        box-shadow: 0 6px 18px rgba(79, 70, 229, 0.32) !important;
+        box-shadow: 0 6px 20px rgba(109, 93, 251, 0.4) !important;
     }
 
     /* ---------- Download buttons ---------- */
     div.stDownloadButton > button:first-child {
-        background: #FFFFFF !important;
-        color: #4338CA !important;
-        border: 1.5px solid #C7D2FE !important;
+        background: #1A1A26 !important;
+        color: #C9C2FF !important;
+        border: 1.5px solid rgba(109, 93, 251, 0.4) !important;
         border-radius: 10px !important;
         font-weight: 600 !important;
         padding: 12px 24px !important;
@@ -220,29 +352,57 @@ st.markdown("""
         transition: all 0.2s ease !important;
     }
     div.stDownloadButton > button:first-child:hover {
-        background: #EEF2FF !important;
-        border-color: #4F46E5 !important;
+        background: rgba(109, 93, 251, 0.12) !important;
+        border-color: #6D5DFB !important;
     }
 
-    /* ---------- Misc ---------- */
+    /* ---------- Inputs / Widgets ให้เข้ากับพื้นมืด ---------- */
+    [data-testid="stFileUploader"] section {
+        background-color: #15151F !important;
+        border: 1.5px dashed #2A2A38 !important;
+        border-radius: 12px !important;
+    }
+    [data-testid="stFileUploader"] small {
+        color: #777A8C !important;
+    }
+    div[data-baseweb="select"] > div {
+        background-color: #15151F !important;
+        border-color: #2A2A38 !important;
+        color: #E4E5EC !important;
+    }
+    .stTextInput input, .stTextArea textarea {
+        background-color: #15151F !important;
+        color: #E4E5EC !important;
+        border-color: #2A2A38 !important;
+    }
+    h1, h2, h3, h4, h5, p, span, label, .stMarkdown {
+        color: #E4E5EC;
+    }
     .helper-text {
         font-size: 0.85rem;
-        color: #94A3B8;
+        color: #777A8C;
         margin-top: 6px;
     }
     .divider-line {
-        border-top: 1px dashed #E2E8F0;
+        border-top: 1px dashed #23232F;
         margin: 22px 0;
     }
     .empty-state {
         text-align: center;
         padding: 50px 20px;
-        color: #94A3B8;
+        color: #5C5F70;
     }
     .empty-state-icon {
         font-size: 2.8rem;
         margin-bottom: 12px;
         opacity: 0.5;
+    }
+
+    /* ---------- แถบแจ้งเตือนของ Streamlit (success / warning / error / info) ---------- */
+    div[data-testid="stNotification"] {
+        background-color: #15151F !important;
+        border: 1px solid #23232F !important;
+        border-radius: 10px !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -288,7 +448,76 @@ def learn_templates():
                 pass
     return structures
 
-# --- ส่วนการแสดงผล (Indigo & Slate Premium UI) ---
+templates_available = learn_templates()
+
+# ใช้สถานะไฟล์ที่อัปโหลดเพื่อกำหนดว่าผู้ใช้อยู่ขั้นตอนไหน (ใช้แสดงผลอย่างเดียว ไม่กระทบ logic)
+_uploaded_marker = st.session_state.get("_last_uploaded_name")
+step2_state = "done" if _uploaded_marker else "active"
+step3_state = "active" if _uploaded_marker else ""
+
+# ===================== SIDEBAR (เมนู / สรุปสถานะ) =====================
+with st.sidebar:
+    st.markdown("""
+        <div class="sb-logo">
+            <div class="sb-logo-icon">🗂️</div>
+            <div class="sb-logo-text">HR Matrix Hub</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="sb-section-label">ขั้นตอนการทำงาน</div>', unsafe_allow_html=True)
+    st.markdown(f"""
+        <div class="sb-step done">
+            <div class="sb-step-num">1</div>
+            <div>
+                <div class="sb-step-text">เลือกเทมเพลตปลายทาง</div>
+                <div class="sb-step-sub">พร้อมใช้งานแล้ว</div>
+            </div>
+        </div>
+        <div class="sb-step {step2_state}">
+            <div class="sb-step-num">2</div>
+            <div>
+                <div class="sb-step-text">อัปโหลดไฟล์หลักฐาน</div>
+                <div class="sb-step-sub">{"อัปโหลดแล้ว: " + _uploaded_marker if _uploaded_marker else "รองรับ Excel / รูปภาพ"}</div>
+            </div>
+        </div>
+        <div class="sb-step {step3_state}">
+            <div class="sb-step-num">3</div>
+            <div>
+                <div class="sb-step-text">วิเคราะห์ด้วย AI</div>
+                <div class="sb-step-sub">คัดแยกหมวดหมู่ + กรอกข้อมูลอัตโนมัติ</div>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="sb-section-label">สถานะระบบ</div>', unsafe_allow_html=True)
+    st.markdown(f"""
+        <div class="sb-info-card">
+            <div class="sb-info-row"><span>เทมเพลตที่พบ</span><b>{len(templates_available)} ไฟล์</b></div>
+            <div class="sb-info-row"><span>โมเดล AI</span><b>Gemini 2.5 Flash</b></div>
+            <div class="sb-info-row"><span>ไฟล์ที่รองรับ</span><b>XLSX · PNG · JPG</b></div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    if templates_available:
+        st.markdown('<div class="sb-section-label">เทมเพลตในระบบ</div>', unsafe_allow_html=True)
+        for tname in templates_available.keys():
+            st.markdown(f"<div class='sb-tip' style='margin-bottom:6px;'>📄 {tname}</div>", unsafe_allow_html=True)
+
+    st.markdown('<div class="sb-section-label">เคล็ดลับการใช้งาน</div>', unsafe_allow_html=True)
+    st.markdown("""
+        <div class="sb-tip">
+            💡 ถ้าอัปโหลดรูปภาพ ให้ถ่ายให้เห็นตัวอักษรชัดเจนและไม่เอียง จะช่วยให้ AI อ่านข้อมูลได้แม่นยำขึ้น
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+        <div class="sb-pro-card">
+            <b>⚡ Powered by Gemini AI</b>
+            <p>ระบบจับคู่และกรอกข้อมูลพนักงานอัตโนมัติ ลดเวลาทำงานซ้ำซ้อนของฝ่าย HR</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+# --- ส่วนการแสดงผลหลัก (Dark / Indigo Premium UI) ---
 
 st.markdown("""
     <div class="main-header">
@@ -296,13 +525,6 @@ st.markdown("""
         <p>อัปโหลดหลักฐาน ให้ AI คัดแยกหมวดหมู่ และจับคู่กรอกข้อมูลพนักงานลงเทมเพลตให้อัตโนมัติ — ไม่ต้องนั่งกรอกเอง</p>
     </div>
 """, unsafe_allow_html=True)
-
-templates_available = learn_templates()
-
-# ใช้สถานะไฟล์ที่อัปโหลดเพื่อกำหนดว่าผู้ใช้อยู่ขั้นตอนไหนของ progress bar (ใช้แสดงผลอย่างเดียว ไม่กระทบ logic)
-_uploaded_marker = st.session_state.get("_last_uploaded_name")
-step2_state = "done" if _uploaded_marker else "active"
-step3_state = "active" if _uploaded_marker else ""
 
 st.markdown(f"""
     <div class="step-track">
@@ -396,7 +618,7 @@ if uploaded_file is None:
     st.markdown("""
         <div class="empty-state">
             <div class="empty-state-icon">🗒️</div>
-            <p style="margin:0; font-weight:600; color:#64748B;">ยังไม่มีไฟล์ให้วิเคราะห์</p>
+            <p style="margin:0; font-weight:600; color:#9799AB;">ยังไม่มีไฟล์ให้วิเคราะห์</p>
             <p style="margin:4px 0 0 0; font-size:0.9rem;">กรุณาอัปโหลดไฟล์หลักฐานในขั้นตอนที่ 2 ก่อน ระบบจะเปิดให้กดวิเคราะห์ที่นี่</p>
         </div>
     """, unsafe_allow_html=True)
@@ -511,9 +733,9 @@ else:
 
                     st.dataframe(
                         df_wide.style.set_properties(**{
-                            'background-color': '#FFFFFF',
-                            'color': '#1E293B',
-                            'border-color': '#E5E7EB'
+                            'background-color': '#14141E',
+                            'color': '#E4E5EC',
+                            'border-color': '#23232F'
                         }),
                         use_container_width=True,
                         hide_index=True
