@@ -11,6 +11,130 @@ from PIL import Image
 # โลโก้ AREE Workforce Tech (ฝังเป็น base64 เพื่อให้แสดงผลได้แน่นอนไม่ต้องพึ่งไฟล์ภายนอกตอน deploy)
 LOGO_BASE64 = "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"
 
+# ===================== ระบบแปลภาษา TH / EN =====================
+# คำแปลของทุกข้อความที่แสดงผลบนหน้าจอ (ไม่รวม prompt ที่ส่งให้ AI และชื่อไฟล์ดาวน์โหลด ซึ่งคงเดิมเสมอ)
+TEXT = {
+    "th": {
+        "page_title": "HR Smart Matrix Hub",
+        "sidebar_logo_text": "HR Matrix Hub",
+        "sidebar_step_label": "ขั้นตอนการทำงาน",
+        "sidebar_step1_title": "เลือกเทมเพลตปลายทาง",
+        "sidebar_step1_sub": "พร้อมใช้งานแล้ว",
+        "sidebar_step2_title": "อัปโหลดไฟล์หลักฐาน",
+        "sidebar_step2_sub_done": "อัปโหลดแล้ว: ",
+        "sidebar_step2_sub_pending": "รองรับ Excel / รูปภาพ",
+        "sidebar_step3_title": "วิเคราะห์ด้วย AI",
+        "sidebar_step3_sub": "คัดแยกหมวดหมู่ + กรอกข้อมูลอัตโนมัติ",
+        "sidebar_status_label": "สถานะระบบ",
+        "sidebar_status_templates": "เทมเพลตที่พบ",
+        "sidebar_status_templates_unit": "ไฟล์",
+        "sidebar_status_model": "โมเดล AI",
+        "sidebar_status_filetypes": "ไฟล์ที่รองรับ",
+        "sidebar_templates_label": "เทมเพลตในระบบ",
+        "sidebar_tips_label": "เคล็ดลับการใช้งาน",
+        "sidebar_tip_text": "💡 ถ้าอัปโหลดรูปภาพ ให้ถ่ายให้เห็นตัวอักษรชัดเจนและไม่เอียง จะช่วยให้ AI อ่านข้อมูลได้แม่นยำขึ้น",
+        "sidebar_pro_title": "⚡ Powered by Gemini AI",
+        "sidebar_pro_sub": "ระบบจับคู่และกรอกข้อมูลพนักงานอัตโนมัติ ลดเวลาทำงานซ้ำซ้อนของฝ่าย HR",
+        "sidebar_lang_label": "🌐 ภาษา / Language",
+        "main_header_title": "🗂️ HR Smart Matrix Hub",
+        "main_header_sub": "อัปโหลดหลักฐาน ให้ AI คัดแยกหมวดหมู่ และจับคู่กรอกข้อมูลพนักงานลงเทมเพลตให้อัตโนมัติ — ไม่ต้องนั่งกรอกเอง",
+        "step_pill_1": "เลือกเทมเพลตปลายทาง",
+        "step_pill_2": "อัปโหลดไฟล์หลักฐาน",
+        "step_pill_3": "ให้ AI วิเคราะห์และดาวน์โหลดผลลัพธ์",
+        "step1_card_title": "ขั้นตอนที่ 1 · เลือกตารางแม่แบบปลายทาง",
+        "step1_card_sub": "เลือกเทมเพลต Excel ที่ต้องการให้ระบบกรอกข้อมูลลงไป",
+        "step1_select_label": "เลือกตารางแม่แบบปลายทาง:",
+        "step1_columns_label": "📌 คอลัมน์ในเทมเพลตนี้: ",
+        "step1_download_btn": "📥 ดาวน์โหลดเทมเพลตเปล่า",
+        "step1_no_templates": "ไม่พบไฟล์แม่แบบในระบบหลังบ้าน",
+        "step2_card_title": "ขั้นตอนที่ 2 · นำเข้าไฟล์หลักฐานดิบ",
+        "step2_card_sub": "รองรับไฟล์ Excel (.xlsx, .xls) หรือรูปภาพเอกสาร (.png, .jpg, .jpeg)",
+        "step2_uploader_label": "ลากและวางไฟล์หรือรูปภาพตรงนี้ หรือคลิกเพื่อเลือกไฟล์",
+        "step2_image_caption": "รูปหลักฐานที่นำเข้าสู่ระบบ",
+        "step2_file_ready": "✅ พร้อมวิเคราะห์ไฟล์: ",
+        "step3_card_title": "ขั้นตอนที่ 3 · วิเคราะห์ด้วย AI และตรวจสอบผลลัพธ์",
+        "step3_card_sub": "ระบบจะคัดแยกหมวดหมู่เอกสาร จับคู่ข้อมูล และกรอกลงเทมเพลตให้อัตโนมัติ",
+        "step3_empty_title": "ยังไม่มีไฟล์ให้วิเคราะห์",
+        "step3_empty_sub": "กรุณาอัปโหลดไฟล์หลักฐานในขั้นตอนที่ 2 ก่อน ระบบจะเปิดให้กดวิเคราะห์ที่นี่",
+        "step3_analyze_btn": "🚀 สั่งเริ่มวิเคราะห์ข้อมูลด้วย AI",
+        "step3_spinner": "🤖 AI กำลังอ่านข้อมูลและประมวลผล กรุณารอสักครู่...",
+        "badge_personal": "🆔 คัดแยกสำเร็จ: หมวดหมู่ข้อมูลส่วนตัว / บัตรประชาชนพนักงาน",
+        "badge_commission": "💰 คัดแยกสำเร็จ: หมวดหมู่รายได้สัมพันธ์ / ค่าคอมมิชชั่นพนักงาน",
+        "badge_ot": "⏱️ คัดแยกสำเร็จ: หมวดหมู่ข้อมูลเวลาทำงาน / โอทีพนักงาน (OT)",
+        "badge_generic": "📦 คัดแยกสำเร็จ: หมวดหมู่ทั่วไปในระบบ HR",
+        "success_msg": "🎉 ประมวลผลและนำข้อมูลจัดระเบียบกรอกลงไฟล์ '{template_name}' สำเร็จแล้วค่ะ",
+        "preview_heading": "#### 👀 ตารางตรวจสอบความถูกต้องก่อนบันทึก (Data Preview)",
+        "download_result_btn": "📥 ดาวน์โหลดไฟล์ Excel ผลลัพธ์สมบูรณ์",
+        "warning_no_match": "⚠️ ไม่สามารถบันทึกข้อมูลได้ เนื่องจากโครงสร้างข้อมูลไม่แมตช์กับหัวตารางในเทมเพลต",
+        "error_processing": "❌ เกิดข้อผิดพลาดในการประมวลผลระบบ: ",
+        "error_no_api_key": "❌ ไม่พบ API Key ในระบบหลังบ้าน กรุณาตั้งค่าใน Advanced Settings ของ Streamlit Cloud",
+        "new_employee_label": "พนักงานรายใหม่",
+        "col_row_index": "แถวตารางที่",
+        "col_full_name": "ชื่อ-นามสกุล",
+    },
+    "en": {
+        "page_title": "HR Smart Matrix Hub",
+        "sidebar_logo_text": "HR Matrix Hub",
+        "sidebar_step_label": "Workflow Steps",
+        "sidebar_step1_title": "Select destination template",
+        "sidebar_step1_sub": "Ready to use",
+        "sidebar_step2_title": "Upload source file",
+        "sidebar_step2_sub_done": "Uploaded: ",
+        "sidebar_step2_sub_pending": "Supports Excel / Images",
+        "sidebar_step3_title": "Analyze with AI",
+        "sidebar_step3_sub": "Classify category + auto-fill data",
+        "sidebar_status_label": "System Status",
+        "sidebar_status_templates": "Templates found",
+        "sidebar_status_templates_unit": "file(s)",
+        "sidebar_status_model": "AI Model",
+        "sidebar_status_filetypes": "Supported files",
+        "sidebar_templates_label": "Templates in system",
+        "sidebar_tips_label": "Usage Tips",
+        "sidebar_tip_text": "💡 If uploading a photo, make sure the text is clear and not tilted — this helps the AI read the data more accurately.",
+        "sidebar_pro_title": "⚡ Powered by Gemini AI",
+        "sidebar_pro_sub": "Automatically matches and fills employee data, reducing repetitive HR workload.",
+        "sidebar_lang_label": "🌐 ภาษา / Language",
+        "main_header_title": "🗂️ HR Smart Matrix Hub",
+        "main_header_sub": "Upload your source document, let AI classify it, and automatically match and fill employee data into the template — no manual entry needed.",
+        "step_pill_1": "Select destination template",
+        "step_pill_2": "Upload source file",
+        "step_pill_3": "Analyze with AI & download result",
+        "step1_card_title": "Step 1 · Select destination template",
+        "step1_card_sub": "Choose the Excel template you want the system to fill data into",
+        "step1_select_label": "Select destination template:",
+        "step1_columns_label": "📌 Columns in this template: ",
+        "step1_download_btn": "📥 Download blank template",
+        "step1_no_templates": "No template files found on the backend",
+        "step2_card_title": "Step 2 · Import source document",
+        "step2_card_sub": "Supports Excel files (.xlsx, .xls) or document images (.png, .jpg, .jpeg)",
+        "step2_uploader_label": "Drag and drop a file or image here, or click to browse",
+        "step2_image_caption": "Source image imported into the system",
+        "step2_file_ready": "✅ Ready to analyze file: ",
+        "step3_card_title": "Step 3 · AI analysis & result review",
+        "step3_card_sub": "The system will classify the document, match the data, and fill it into the template automatically",
+        "step3_empty_title": "No file to analyze yet",
+        "step3_empty_sub": "Please upload a source file in Step 2 first — the analyze button will appear here.",
+        "step3_analyze_btn": "🚀 Start AI Analysis",
+        "step3_spinner": "🤖 AI is reading and processing the data, please wait...",
+        "badge_personal": "🆔 Classified: Personal Data / Employee ID Card",
+        "badge_commission": "💰 Classified: Commission / Employee Income",
+        "badge_ot": "⏱️ Classified: Working Hours / Employee Overtime (OT)",
+        "badge_generic": "📦 Classified: General HR Category",
+        "success_msg": "🎉 Data processed and filled into '{template_name}' successfully!",
+        "preview_heading": "#### 👀 Data Preview (Verify before saving)",
+        "download_result_btn": "📥 Download Completed Excel File",
+        "warning_no_match": "⚠️ Could not save data because the structure does not match the template headers.",
+        "error_processing": "❌ An error occurred while processing: ",
+        "error_no_api_key": "❌ API Key not found on the backend. Please set it in Advanced Settings on Streamlit Cloud.",
+        "new_employee_label": "New Employee",
+        "col_row_index": "Row No.",
+        "col_full_name": "Full Name",
+    },
+}
+
+if "lang" not in st.session_state:
+    st.session_state["lang"] = "th"
+
 # 1. ตั้งค่าหน้าเว็บระดับพรีเมียม
 st.set_page_config(
     page_title="HR Smart Matrix Hub",
@@ -530,7 +654,7 @@ try:
     GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
     client = genai.Client(api_key=GEMINI_API_KEY)
 except Exception as e:
-    st.error("❌ ไม่พบ API Key ในระบบหลังบ้าน กรุณาตั้งค่าใน Advanced Settings ของ Streamlit Cloud")
+    st.error(TEXT[st.session_state["lang"]]["error_no_api_key"])
     st.stop()
 
 TEMPLATES_FOLDER = "hr_templates"
@@ -575,82 +699,98 @@ step3_state = "active" if _uploaded_marker else ""
 
 # ===================== SIDEBAR (เมนู / สรุปสถานะ) =====================
 with st.sidebar:
+    # ตัวเลือกภาษา TH/EN — เก็บค่าไว้ใน session_state เพื่อใช้ตลอดทั้งแอป
+    lang_options = {"th": "🇹🇭 ไทย", "en": "🇬🇧 English"}
+    selected_lang_label = st.radio(
+        TEXT[st.session_state["lang"]]["sidebar_lang_label"],
+        options=list(lang_options.values()),
+        index=list(lang_options.keys()).index(st.session_state["lang"]),
+        horizontal=True,
+        label_visibility="visible",
+        key="lang_radio"
+    )
+    st.session_state["lang"] = [k for k, v in lang_options.items() if v == selected_lang_label][0]
+
+    lang = st.session_state["lang"]
+    T = TEXT[lang]
+
     st.markdown(f"""
         <div class="sb-logo">
             <div class="sb-logo-icon"><img src="data:image/png;base64,{LOGO_BASE64}" alt="AREE Workforce Tech logo"/></div>
-            <div class="sb-logo-text">HR Matrix Hub</div>
+            <div class="sb-logo-text">{T['sidebar_logo_text']}</div>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="sb-section-label">ขั้นตอนการทำงาน</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="sb-section-label">{T["sidebar_step_label"]}</div>', unsafe_allow_html=True)
+    step2_sub_text = (T["sidebar_step2_sub_done"] + _uploaded_marker) if _uploaded_marker else T["sidebar_step2_sub_pending"]
     st.markdown(f"""
         <div class="sb-step done">
             <div class="sb-step-num">1</div>
             <div>
-                <div class="sb-step-text">เลือกเทมเพลตปลายทาง</div>
-                <div class="sb-step-sub">พร้อมใช้งานแล้ว</div>
+                <div class="sb-step-text">{T['sidebar_step1_title']}</div>
+                <div class="sb-step-sub">{T['sidebar_step1_sub']}</div>
             </div>
         </div>
         <div class="sb-step {step2_state}">
             <div class="sb-step-num">2</div>
             <div>
-                <div class="sb-step-text">อัปโหลดไฟล์หลักฐาน</div>
-                <div class="sb-step-sub">{"อัปโหลดแล้ว: " + _uploaded_marker if _uploaded_marker else "รองรับ Excel / รูปภาพ"}</div>
+                <div class="sb-step-text">{T['sidebar_step2_title']}</div>
+                <div class="sb-step-sub">{step2_sub_text}</div>
             </div>
         </div>
         <div class="sb-step {step3_state}">
             <div class="sb-step-num">3</div>
             <div>
-                <div class="sb-step-text">วิเคราะห์ด้วย AI</div>
-                <div class="sb-step-sub">คัดแยกหมวดหมู่ + กรอกข้อมูลอัตโนมัติ</div>
+                <div class="sb-step-text">{T['sidebar_step3_title']}</div>
+                <div class="sb-step-sub">{T['sidebar_step3_sub']}</div>
             </div>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="sb-section-label">สถานะระบบ</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="sb-section-label">{T["sidebar_status_label"]}</div>', unsafe_allow_html=True)
     st.markdown(f"""
         <div class="sb-info-card">
-            <div class="sb-info-row"><span>เทมเพลตที่พบ</span><b>{len(templates_available)} ไฟล์</b></div>
-            <div class="sb-info-row"><span>โมเดล AI</span><b>Gemini 2.5 Flash</b></div>
-            <div class="sb-info-row"><span>ไฟล์ที่รองรับ</span><b>XLSX · PNG · JPG</b></div>
+            <div class="sb-info-row"><span>{T['sidebar_status_templates']}</span><b>{len(templates_available)} {T['sidebar_status_templates_unit']}</b></div>
+            <div class="sb-info-row"><span>{T['sidebar_status_model']}</span><b>Gemini 2.5 Flash</b></div>
+            <div class="sb-info-row"><span>{T['sidebar_status_filetypes']}</span><b>XLSX · PNG · JPG</b></div>
         </div>
     """, unsafe_allow_html=True)
 
     if templates_available:
-        st.markdown('<div class="sb-section-label">เทมเพลตในระบบ</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="sb-section-label">{T["sidebar_templates_label"]}</div>', unsafe_allow_html=True)
         for tname in templates_available.keys():
             st.markdown(f"<div class='sb-tip' style='margin-bottom:6px;'>📄 {tname}</div>", unsafe_allow_html=True)
 
-    st.markdown('<div class="sb-section-label">เคล็ดลับการใช้งาน</div>', unsafe_allow_html=True)
-    st.markdown("""
+    st.markdown(f'<div class="sb-section-label">{T["sidebar_tips_label"]}</div>', unsafe_allow_html=True)
+    st.markdown(f"""
         <div class="sb-tip">
-            💡 ถ้าอัปโหลดรูปภาพ ให้ถ่ายให้เห็นตัวอักษรชัดเจนและไม่เอียง จะช่วยให้ AI อ่านข้อมูลได้แม่นยำขึ้น
+            {T['sidebar_tip_text']}
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("""
+    st.markdown(f"""
         <div class="sb-pro-card">
-            <b>⚡ Powered by Gemini AI</b>
-            <p>ระบบจับคู่และกรอกข้อมูลพนักงานอัตโนมัติ ลดเวลาทำงานซ้ำซ้อนของฝ่าย HR</p>
+            <b>{T['sidebar_pro_title']}</b>
+            <p>{T['sidebar_pro_sub']}</p>
         </div>
     """, unsafe_allow_html=True)
 
 # --- ส่วนการแสดงผลหลัก (Dark / Indigo Premium UI) ---
 
-st.markdown("""
+st.markdown(f"""
     <div class="main-header">
-        <h1>🗂️ HR Smart Matrix Hub</h1>
-        <p>อัปโหลดหลักฐาน ให้ AI คัดแยกหมวดหมู่ และจับคู่กรอกข้อมูลพนักงานลงเทมเพลตให้อัตโนมัติ — ไม่ต้องนั่งกรอกเอง</p>
+        <h1>{T['main_header_title']}</h1>
+        <p>{T['main_header_sub']}</p>
     </div>
 """, unsafe_allow_html=True)
 
 st.markdown(f"""
     <div class="step-track">
-        <div class="step-pill done"><span class="step-num">1</span>เลือกเทมเพลตปลายทาง</div>
+        <div class="step-pill done"><span class="step-num">1</span>{T['step_pill_1']}</div>
         <div class="step-connector"></div>
-        <div class="step-pill {step2_state}"><span class="step-num">2</span>อัปโหลดไฟล์หลักฐาน</div>
+        <div class="step-pill {step2_state}"><span class="step-num">2</span>{T['step_pill_2']}</div>
         <div class="step-connector"></div>
-        <div class="step-pill {step3_state}"><span class="step-num">3</span>ให้ AI วิเคราะห์และดาวน์โหลดผลลัพธ์</div>
+        <div class="step-pill {step3_state}"><span class="step-num">3</span>{T['step_pill_3']}</div>
     </div>
 """, unsafe_allow_html=True)
 
@@ -659,12 +799,12 @@ st.markdown(f"""
 
 # ===================== STEP 1: เลือกเทมเพลตปลายทาง =====================
 st.markdown('<div class="card-box">', unsafe_allow_html=True)
-st.markdown("""
+st.markdown(f"""
     <div class="card-box-header">
         <div class="card-box-icon">📁</div>
         <div>
-            <p class="card-box-title">ขั้นตอนที่ 1 · เลือกตารางแม่แบบปลายทาง</p>
-            <p class="card-box-subtitle">เลือกเทมเพลต Excel ที่ต้องการให้ระบบกรอกข้อมูลลงไป</p>
+            <p class="card-box-title">{T['step1_card_title']}</p>
+            <p class="card-box-subtitle">{T['step1_card_sub']}</p>
         </div>
     </div>
 """, unsafe_allow_html=True)
@@ -672,37 +812,37 @@ st.markdown("""
 if templates_available:
     col_select, col_download = st.columns([2, 1], gap="medium")
     with col_select:
-        selected_t_download = st.selectbox("เลือกตารางแม่แบบปลายทาง:", list(templates_available.keys()), label_visibility="collapsed")
-        st.markdown(f"<p class='helper-text'>📌 คอลัมน์ในเทมเพลตนี้: {', '.join(templates_available[selected_t_download]['headers'])}</p>", unsafe_allow_html=True)
+        selected_t_download = st.selectbox(T["step1_select_label"], list(templates_available.keys()), label_visibility="collapsed")
+        st.markdown(f"<p class='helper-text'>{T['step1_columns_label']}{', '.join(templates_available[selected_t_download]['headers'])}</p>", unsafe_allow_html=True)
 
     t_download_path = os.path.join(TEMPLATES_FOLDER, selected_t_download)
     with open(t_download_path, "rb") as f:
         with col_download:
             st.download_button(
-                label="📥 ดาวน์โหลดเทมเพลตเปล่า",
+                label=T["step1_download_btn"],
                 data=f,
                 file_name=selected_t_download,
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True
             )
 else:
-    st.error("ไม่พบไฟล์แม่แบบในระบบหลังบ้าน")
+    st.error(T["step1_no_templates"])
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ===================== STEP 2: นำเข้าไฟล์หลักฐาน =====================
 st.markdown('<div class="card-box">', unsafe_allow_html=True)
-st.markdown("""
+st.markdown(f"""
     <div class="card-box-header">
         <div class="card-box-icon">📤</div>
         <div>
-            <p class="card-box-title">ขั้นตอนที่ 2 · นำเข้าไฟล์หลักฐานดิบ</p>
-            <p class="card-box-subtitle">รองรับไฟล์ Excel (.xlsx, .xls) หรือรูปภาพเอกสาร (.png, .jpg, .jpeg)</p>
+            <p class="card-box-title">{T['step2_card_title']}</p>
+            <p class="card-box-subtitle">{T['step2_card_sub']}</p>
         </div>
     </div>
 """, unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader(
-    "ลากและวางไฟล์หรือรูปภาพตรงนี้ หรือคลิกเพื่อเลือกไฟล์",
+    T["step2_uploader_label"],
     type=["xlsx", "xls", "png", "jpg", "jpeg"],
     label_visibility="visible"
 )
@@ -715,34 +855,34 @@ if uploaded_file is not None:
         col_img, col_spacer = st.columns([1, 1], gap="medium")
         with col_img:
             image_obj = Image.open(uploaded_file)
-            st.image(image_obj, caption="รูปหลักฐานที่นำเข้าสู่ระบบ", use_container_width=True)
+            st.image(image_obj, caption=T["step2_image_caption"], use_container_width=True)
     else:
-        st.markdown(f"<p class='helper-text'>✅ พร้อมวิเคราะห์ไฟล์: <b>{uploaded_file.name}</b></p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='helper-text'>{T['step2_file_ready']}<b>{uploaded_file.name}</b></p>", unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ===================== STEP 3: วิเคราะห์ด้วย AI และแสดงผล =====================
 st.markdown('<div class="card-box">', unsafe_allow_html=True)
-st.markdown("""
+st.markdown(f"""
     <div class="card-box-header">
         <div class="card-box-icon">🤖</div>
         <div>
-            <p class="card-box-title">ขั้นตอนที่ 3 · วิเคราะห์ด้วย AI และตรวจสอบผลลัพธ์</p>
-            <p class="card-box-subtitle">ระบบจะคัดแยกหมวดหมู่เอกสาร จับคู่ข้อมูล และกรอกลงเทมเพลตให้อัตโนมัติ</p>
+            <p class="card-box-title">{T['step3_card_title']}</p>
+            <p class="card-box-subtitle">{T['step3_card_sub']}</p>
         </div>
     </div>
 """, unsafe_allow_html=True)
 
 if uploaded_file is None:
-    st.markdown("""
+    st.markdown(f"""
         <div class="empty-state">
             <div class="empty-state-icon">🗒️</div>
-            <p style="margin:0; font-weight:600; color:#9799AB;">ยังไม่มีไฟล์ให้วิเคราะห์</p>
-            <p style="margin:4px 0 0 0; font-size:0.9rem;">กรุณาอัปโหลดไฟล์หลักฐานในขั้นตอนที่ 2 ก่อน ระบบจะเปิดให้กดวิเคราะห์ที่นี่</p>
+            <p style="margin:0; font-weight:600; color:#9799AB;">{T['step3_empty_title']}</p>
+            <p style="margin:4px 0 0 0; font-size:0.9rem;">{T['step3_empty_sub']}</p>
         </div>
     """, unsafe_allow_html=True)
 else:
-    if st.button("🚀 สั่งเริ่มวิเคราะห์ข้อมูลด้วย AI", use_container_width=True):
-        with st.spinner("🤖 AI กำลังอ่านข้อมูลและประมวลผล กรุณารอสักครู่..."):
+    if st.button(T["step3_analyze_btn"], use_container_width=True):
+        with st.spinner(T["step3_spinner"]):
             try:
                 ai_contents = []
                 if is_image:
@@ -798,16 +938,16 @@ else:
                 template_name = ai_result.get("selected_template")
                 updates = ai_result.get("updates", [])
 
-                # 🎯 กล่อง Badge หมวดหมู่
+                # 🎯 กล่อง Badge หมวดหมู่ (ข้อความแสดงผลเปลี่ยนตามภาษา, logic การจัดหมวดหมู่จาก AI เหมือนเดิม)
                 st.markdown('<div class="divider-line"></div>', unsafe_allow_html=True)
                 if category == "PERSONAL_DATA":
-                    st.markdown('<div class="badge-personal">🆔 คัดแยกสำเร็จ: หมวดหมู่ข้อมูลส่วนตัว / บัตรประชาชนพนักงาน</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="badge-personal">{T["badge_personal"]}</div>', unsafe_allow_html=True)
                 elif category == "COMMISSION":
-                    st.markdown('<div class="badge-commission">💰 คัดแยกสำเร็จ: หมวดหมู่รายได้สัมพันธ์ / ค่าคอมมิชชั่นพนักงาน</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="badge-commission">{T["badge_commission"]}</div>', unsafe_allow_html=True)
                 elif category == "OVERTIME":
-                    st.markdown('<div class="badge-ot">⏱️ คัดแยกสำเร็จ: หมวดหมู่ข้อมูลเวลาทำงาน / โอทีพนักงาน (OT)</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="badge-ot">{T["badge_ot"]}</div>', unsafe_allow_html=True)
                 else:
-                    st.markdown('<div class="badge-generic">📦 คัดแยกสำเร็จ: หมวดหมู่ทั่วไปในระบบ HR</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="badge-generic">{T["badge_generic"]}</div>', unsafe_allow_html=True)
                 st.write("")
 
                 template_path = os.path.join(TEMPLATES_FOLDER, template_name)
