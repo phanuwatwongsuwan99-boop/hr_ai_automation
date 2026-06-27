@@ -1,9 +1,5 @@
 streamlit
-groq
-pandas
-PyPDF2
-docx2txt
-Pillow
-pytesseract
-fpdf2
-requests
+google-genai
+openpyxl
+pypdf
+pillow
