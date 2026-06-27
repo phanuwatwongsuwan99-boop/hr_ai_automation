@@ -1,5 +1,9 @@
 streamlit
-google-genai
-openpyxl
-pypdf
-pillow
+groq
+pandas
+PyPDF2
+docx2txt
+Pillow
+pytesseract
+fpdf2
+requests
