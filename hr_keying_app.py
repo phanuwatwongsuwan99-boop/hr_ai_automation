@@ -8,8 +8,8 @@ from openpyxl import load_workbook
 import pandas as pd
 from PIL import Image
 
-# โลโก้ AREE Workforce Tech (คงเดิม)
-LOGO_BASE64 = "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAQU0lEQVR42u2dfXBc1XnGn/c992MlWbYiG1vy11qOAraEIQyF0CQgm+DBIZRJw6zSZEjTodNkmDbQaYBQXCOJfNCkoUnI5I90OuSjUybjpQNpS8vQplhJE0MKBLDBwTE0EjY22GDLtSRr95737R/3riWMZGuvbWl3fX6aO7ra3bl7dc/7POc9H/dcwOFwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8NRNdDZ+o8rQL3oMp1YqC8grwDQCdA56KIt6Jc+QFx41CibAXPyz+TM2XAtvLOt8HsA7gbs11vPXTDPx0d9pSt86LJAiOuJ9jWo+cUcyTz0O3vzgwBIY5tUVwXUwP/aA1AfIF9f1n5TPeiuRjYtPgCjhECBDBHqQIDgcKj8jUv3PN9HINRyEJw1AbAZMN2A/cqy9vua2XzOqoJVoxCAB6ZAgRCAD2gI9haxh0JED1/cell3/umDkkNeajEIzNlU+L3LVt4yz3g9o9YWGSAPZAyIDYg9IPlNTCAdE1tc4JnOgaHXmtcf+a9HOpEzebyozgGqsM7vBbR32XmthqKdISjDCg5BFIAQAPARVwET//YBDRW2kXwPUcOla/ZtfWozctyNvK2l68O1HgCdyBEBGlF0e8imwaoqTSPwCSAByCNFRGO9cDlAdaq/D9Dbl7QvCYz+OgTVGYACRaL+qR0gAOArwYdKI+pZi3N+t+ON/ic2I2dqyQW4ttUPAqDKcnvI3CBQofKDXn0CilzsrcVrxLWs/m5Abm5duZwIfzwmIpou6TVHJJI6Nldva/3gB7qRt7XUScS1rn42uCNkrk+p/lJNqR4IVqXHOUAVqf+WbHYFGH80JiIESq1agmf+TyOpZ2/9C61XXF5LLsC1rP6C8h0hc53EAzuUrvANSD0AqgaESKUXAHLoUBcAFaz+m5a/ZyUDn47Vn7bDS2E0AMU/5ohGUk/eldsWda0l9EktuEDNBcCLJfVT8U7fcEZVU6lfATAMPPUndgAoA7CoHRfgWlN/HpAbli5tZ+CGgoiAKLX6ffVBcTwl1UHsAnPY69q+aN2VhD7RKncBrkX1E3sbfTahavq638AgUA9aGgs8lhNACYQocQFUuQtwran/421t5zLhkwWxgpR1v0KROab+d6SFZlgj28je5c+3Xrm+2l2Aa079Vjb6zIECMkUJnrTu98DIHFP/CT4r1e8CXEvq/1g2u4oInyiInJL6G9Q/2YVJXMB///aWD22oZhfgWlK/qm7ymH0FUvX6KQAfjHo105oRqlAItEcBqlYX4FpR/3XLl3cwUXfxFNr9CsVc9cDTiB0CmRGN7BzyLnux5aoPV6sLcK2oX4BNHrOHFL1+pYZeCEaDepAyhv4VQCTSW60uUNUBkANMHpAPr1y6hhi5Ylz3e+nUDzSpAaOcmR9khiWyczm4ZPui9ddWowvUQg6g1vImw2wQ9/qVjYVqBiRzk7q/HPsgAgSqqtrTgx6uNhfgalf/uhVLLiTGxyIrAiIvjfI9ELXCY0rygPIgM6yRNLJ/8fULt15H6JPH0eW5AJgh9avwXYbYaKo5eyp1xFqEPlkn9Eg9Mwgoe7oXJS6ihB5FD6/FWnEBMAPqvyKbvYgMfTQSEaLyM38F1CeiIuvdLSa4JdJj5Vm2C4xoJPPIf+/2lq2/X00uUM0OoEXYHkPECk1T79oMMQ9JtK19YPFji159+uURsf/cyIY1pQtEEBXFXZuRM9XiAlyt6n/f8uUXM9N1UcrZPgqFISIRvnsd+iMFKCD0jmnaqWOJC3BwwapFh6+vFheoVgdQS7aXiShd3Q+bIcPDNnq2ac9LD8WdSTnufO35X42q/LiRDQMapQgCKqoolDY9ji6vGlyAq1D99sK2pZcS80dsil4/TTYmEEB3dwO2EzlK3iOf0HdUxRKo7GtDAI9qJPOMf37zwkyuGlygKh1AVXqYiJBG/RrX/SNWntm3+zc/jqeQ5W038jaPHK/Z8+xzYyIPxS6AVC5QUFGANim6vC3oFxcAp1H9q7JLLmPma2zqET8FE0hI+voAKal/gkMQGb57VK2lFNeHQDyqkTRxuHrbwoY/6AMq2gWqzwFYeym+W1/LzdUUsCEbM2LlqT9/9eV/Kam/9H7JBS7c/fS2o6IPNrKXOhcoqFVSbFR8xk9cgFwApMfkAbtyZesHmPhqKyKgdCN+cWVPvQRo5ySFkkOHKkCBx18cVRvFuYCmcAErczlYtf2cPZ9IXMC4ADhFSNCbFFnZdb9CbUhsRsQ+edue3/xbaamYdxZen+SR485X/+eFMZHNsQukyQVAY7CqRH+1HblgC/FK+0AFqiEADAC7รK31cjBfJaLpอนU8AM3oxhfqPdwED86VRscWkRaDlfRfxUbUyj/33yIKRG/oA2VKBLlANAaAAQIq+OPFP1+4PyZhRa7feOfDyo1Op/3gXWLPvyR0F6I+SfgGbygXUKpju3Nm+IaxEF+AqUL9ks0vWGuZ1cgpz/eL1vrgXOHbr2ElaHXlVgED2y6MihSQXKM8FELtAEwfvjg6Hn6pEF+BqUD9Yeill3Q+oDZjNUZH/7nt112MnU/+EZFHyyPGFrz310hjkgUb2GIpULnBUrVrVO/8325WpNBfgSlf/8pWLP8TEXVY0lfoVyTpvwLTVf7wLeBG+PCK2wJQiFyi5gPHbhkebPl1pLsCVrn4SpFe/wmbY8KjIT+8ZfOUn01X/RBcAcnz+/id2FVX+IekXSDNSSKNqVVX/cnBprq6SXIArWf1tba3rjaEPiqillOpXVRBTD3BsAmmZxC7Alu4Zlugog7j8ASjiMbXSZILs4bGxGyvJBbiS1a+Jbac8gM0w85jI4/cOvLwlmT6eRr0C5HjN/l+8XAB+mPQLpHYBEL7w7KL1DWvRbyvBBbhS1Z/Ntmxg5veLqE2Z+ZNAQaq96dX/dhcIxdwzLHbUpHaBSOZxuMyT+hsJ0EpwAa5Q9ROYTkn9ITOPqfznt3b/9qdp1X+8C6x+vf+3RdXvp3cBohG1qkRf2LvohopwAa5E9S9fueQaw+Z9p6R+BaB8GtT/dheIKPrqERuNGCCVCxQ0kiYKlrxhhz9TCS7Alah+EulRTTXPb1z9Yh/77uArPy8NI5/qiZVc4OJ9WweKpPc3sseU2gUiNYRbd8y/rnG2XaCSAsADIMvaFl9rjLkkWdollfqtKojSJ5AncwHD+rUjEg0zyJQ/IZV4DFaaOFhs4c26C1RSAAgAZkVq9QvUhsxcFP33+wcGtp4u9b+jRfDaz16NVP++kT2Cki3/ohMNS6REeuvO5g1zZ9MFuJLUn31363XG8MVp1U8gsqrKhnrP1In2Ji5gffM3RyQ6YghpbkrhAsTO47DlqKm7aTZdoFL6pBkAVrS1Pk3EF04VAIzxBZ0DHV/sOQDBV9hGNkasfXT14OBHnmxv90d37bJru7rGD9B/ssLtF5rGw6IUOUPI2+cWrbu3mYO/OCg2IpAXX05OLmu8mlBpnzC+Hx+ExIMhq/JGxprzVh7MH04KRM+2APAARG1tLdcTew+KyJSZ/wkCQANA68Bjvsj5DwwOvnIqJ1R6wMRU75eeQbBjwdUt4kUvkfIcmzhQGQEABaJ3UegdlOLGNQf+6SuPo8tbh/7obAsABkDZFa3PMPOaE9n/CQJA6kCsogMR4289JRMAGibR5QPwYBBKvB+g9HgYRgigHkbrIAcD9rZ9cmDHr5LWBJ/IDUqF9XzLlV9rovC2IYkigLwyA0B9GFjVA7YYnrdm6IFDM+0CXiWof8WKxd1s+AKxYlPO9mGrCmVkQ+Zvxev8T1j3P9kPiZLCT34rIwQhAyCAAUTw8LJVv2Sle2j3joeT5w1MGgSlAZ1XBPcepuJnDbgxioucpqำอย้อนของฝ่าย HR",
+# โลโก้ AREE Workforce Tech (ฝังเป็น base64 เพื่อให้แสดงผลได้แน่นอนไม่ต้องพึ่งไฟล์ภายนอกตอน deploy)
+LOGO_BASE64 = "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อนU8AM3oxhfqPdwED86VRscWkRaDlfRfxUbUyj/33yIKRG/oA2VKBLlANAaAAQIq+OPFP1+4PyZhRa7feOfDyo1Op/3gXWLPvyR0F6I+SfgGbygXUKpju3Nm+IaxEF+AqUL9ks0vWGuZ1cgpz/eL1vrgXOHbr2ElaHXlVgED2y6MihSQXKM8FELtAEwfvjg6Hn6pEF+BqUD9Yeill3Q+oDZjNUZH/7nt112MnU/+EZFHyyPGFrz310hjkgUb2GIpULnBUrVrVO/8325WpNBfgSlf/8pWLP8TEXVY0lfoVyTpvwLTVf7wLeBG+PCK2wJQiFyi5gPHbhkebPl1pLsCVrn4SpFe/wmbY8KjIT+8ZfOUn01X/RBcAcnz+/id2FVX+IekXSDNSSKNqVVX/cnBprq6SXIArWf1tba3rjaEPiqillOpXVRBTD3BsAmmZxC7Alu4Zlugog7j8ASjiMbXSZILs4bGxGyvJBbiS1a+Jbac8gM0w85jI4/cOvLwlmT6eRr0C5HjN/l+8XAB+mPQLpHYBEL7w7KL1DWvRbyvBBbhS1Z/Ntmxg5veLqE2Z+ZNAQaq96dX/dhcIxdwzLHbUpHaBSOZxuMyT+hsJ0EpwAa5Q9ROYTkn9ITOPqfznt3b/9qdp1X+8C6x+vf+3RdXvp3cBohG1qkRf2LvohopwAa5E9S9fueQaw+Z9p6R+BaB8GtT/dheIKPrqERuNGCCVCxQ0kiYKlrxhhz9TCS7Alah+EulRTTXPb1z9Yh/77uArPy8NI5/qiZVc4OJ9WweKpPc3sseU2gUiNYRbd8y/rnG2XaCSAsADIMvaFl9rjLkkWdollfqtKojSJ5AncwHD+rUjEg0zyJQ/IZV4DFaaOFhs4c26C1RSAAgAZkVq9QvUhsxcFP33+wcGtp4u9b+jRfDaz16NVP++kT2Cki3/ohMNS6REeuvO5g1zZ9MFuJLUn31363XG8MVp1U8gsqrKhnrP1In2Ji5gffM3RyQ6YghpbkrhAsTO47DlqKm7aTZdoFL6pBkAVrS1Pk3EF04VAIzxBZ0DHV/sOQDBV9hGNkasfXT14OBHnmxv90d37bJru7rGD9B/ssLtF5rGw6IUOUPI2+cWrbu3mYO/OCg2IpAXX05OLmu8mlBpnzC+Hx+ExIMhq/JGxprzVh7MH04KRM+2APAARG1tLdcTew+KyJSZ/wkCQANA68Bjvsj5DwwOvnIqJ1R6wMRU75eeQbBjwdUt4kUvkfIcmzhQGQEABaJ3UegdlOLGNQf+6SuPo8tbh/7obAsABkDZFa3PMPOaE9n/CQJA6kCsogMR4289JRMAGibR5QPwYBBKvB+g9HgYRgigHkbrIAcD9rZ9cmDHr5LWBJ/IDUqF9XzLlV9rovC2IYkigLwyA0B9GFjVA7YYnrdm6IFDM+0CXiWof8WKxd1s+AKxYlPO9mGrCmVkQ+Zvxev8T1j3P9kPiZLCT34rIwQhAyCAAUTw8LJVv2Sle2j3joeT5w1MGgSlAZ1XBPcepuJnDbgxioucpq8+oiIkepcJz3kLo39GwBfjGcQz5wJUAernFStanyXmjpMlf1M5QAgCx80I9RXWQykAxh0gfijEeM4QJscIS/sgCsHcBKY5xChauffqPTtuPdEDIkou8NzCq+5pNsEdByWKCOxN1wGSkWr1YRBB3kLI53buzh+cSRfgWVa/ZFe25tiYzlNo98fLtBwTFbzk2B5AHk2x4biNQIYAGlOxR8RGCzzv81uWrL47Xhl8跡ย้อนของฝ่าย HR",
         "sidebar_lang_label": "🌐 ภาษา / Language",
         "main_header_title": "🗂️ HR Smart Matrix Hub",
         "main_header_sub": "อัปโหลดหลักฐาน ให้ AI คัดแยกหมวดหมู่ และจับคู่กรอกข้อมูลพนักงานลงเทมเพลตให้อัตโนมัติ — ไม่ต้องนั่งกรอกเอง",
@@ -46,7 +46,6 @@ LOGO_BASE64 = "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAQU0lEQVR42u2dfXBc1
         "new_employee_label": "พนักงานรายใหม่",
         "col_row_index": "แถวตารางที่",
         "col_full_name": "ชื่อ-นามสกุล",
-        # เพิ่มชุดแปลภาษาสำหรับฟีเจอร์ใหม่
         "admin_section_title": "⚙️ สำหรับผู้ดูแลระบบ: การจัดการไฟล์แม่แบบ (Template Settings)",
         "admin_upload_label": "📤 อัปโหลดไฟล์แม่แบบ Excel อันใหม่เข้าสู่ระบบ (.xlsx เท่านั้น):",
         "admin_upload_success": "🎉 บันทึกเทมเพลตใหม่ '{name}' เข้าสู่ระบบเรียบร้อย! คุณสามารถเลือกใช้งานในขั้นตอนที่ 1 ได้ทันที",
@@ -208,7 +207,7 @@ st.markdown("""
         background: rgba(109, 93, 251, 0.12);
         border: 1px solid rgba(109, 93, 251, 0.4);
     }
-   .sb-step.done {
+    .sb-step.done {
         background: rgba(34, 197, 94, 0.07);
         border: 1px solid rgba(34, 197, 94, 0.25);
     }
@@ -230,7 +229,7 @@ st.markdown("""
     .sb-step.done .sb-step-num { background: #22C55E; color: white; }
     .sb-step-text {
         font-size: 0.85rem;
-      0 font-weight: 600;
+        font-weight: 600;
         color: #E4E5EC;
         line-height: 1.3;
     }
@@ -386,7 +385,7 @@ st.markdown("""
         font-size: 1.1rem;
         flex-shrink: 0;
     }
-   .card-box-title {
+    .card-box-title {
         font-size: 1.05rem;
         font-weight: 700;
         color: #F4F4F8;
@@ -592,7 +591,7 @@ st.markdown("""
             font-size: 1.3rem;
         }
         .step-pill {
-            font-size: 0.7_rem;
+            font-size: 0.7rem;
             padding: 6px 10px 6px 6px;
         }
         .step-num, .sb-step-num {
@@ -676,20 +675,20 @@ def learn_templates():
                 pass
     return structures
 
-# 🎯 ส่วนที่ปรับปรุง: ดึงโครงสร้างเทมเพลตแบบไดนามิก ป้องกันข้อมูลแคชค้างบนเซิร์ฟเวอร์คลาวด์
+# ดึงโครงสร้างเทมเพลตแบบไดนามิก ป้องกันข้อมูลแคชค้างบนเซิร์ฟเวอร์คลาวด์
 if "templates_available" not in st.session_state:
     st.session_state["templates_available"] = learn_templates()
 
 templates_available = st.session_state["templates_available"]
 
-# ใช้สถานะไฟล์ที่อัปโหลดเพื่อกำหนดว่าผู้ใช้อยู่ขั้นตอนไหน (ใช้แสดงผลอย่างเดียว ไม่กระทบ logic)
+# ใช้สถานะไฟล์ที่อัปโหลดเพื่อกำหนดว่าผู้ใช้อยู่ขั้นตอนไหน
 _uploaded_marker = st.session_state.get("_last_uploaded_name")
 step2_state = "done" if _uploaded_marker else "active"
 step3_state = "active" if _uploaded_marker else ""
 
 # ===================== SIDEBAR (เมนู / สรุปสถานะ) =====================
 with st.sidebar:
-    # ตัวเลือกภาษา TH/EN — เก็บค่าไว้ใน session_state เพื่อใช้ตลอดทั้งแอป
+    # ตัวเลือกภาษา TH/EN
     lang_options = {"th": "🇹🇭 ไทย", "en": "🇬🇧 English"}
     selected_lang_label = st.radio(
         TEXT[st.session_state["lang"]]["sidebar_lang_label"],
@@ -765,7 +764,7 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
 
-# --- ส่วนการแสดงผลหลัก (Dark / Indigo Premium UI) ---
+# --- ส่วนการแสดงผลหลัก ---
 
 st.markdown(f"""
     <div class="main-header">
@@ -803,7 +802,6 @@ if templates_available:
         st.markdown(f"<p class='helper-text'>{T['step1_columns_label']}{', '.join(templates_available[selected_t_download]['headers'])}</p>", unsafe_allow_html=True)
 
     t_download_path = os.path.join(TEMPLATES_FOLDER, selected_t_download)
-    # เพิ่มการดักตรวจสอบเพื่อไม่ให้ระบบเออเร่อกรณีไฟล์เพิ่งลบหรือโฟลเดอร์ว่างเปล่า
     if os.path.exists(t_download_path):
         with open(t_download_path, "rb") as f:
             with col_download:
@@ -1006,10 +1004,9 @@ else:
                 st.error(f"❌ เกิดข้อผิดพลาดในการประมวลผลระบบ: {e}")
 st.markdown('</div>', unsafe_allow_html=True) 
 
-# ===================== 🎯 ฟีเจอร์ใหม่: แผงควบคุมระบบสำหรับอัปโหลดเทมเพลตตรงหน้าเว็บ =====================
+# ===================== ฟีเจอร์: แผงควบคุมระบบสำหรับอัปโหลดเทมเพลตตรงหน้าเว็บ =====================
 st.write("")
 with st.expander(T["admin_section_title"]):
-    # ช่องรับไฟล์เทมเพลต Excel (.xlsx เท่านั้น) จากผู้ใช้งานทั่วไป
     new_template_file = st.file_uploader(
         T["admin_upload_label"],
         type=["xlsx"],
@@ -1017,15 +1014,10 @@ with st.expander(T["admin_section_title"]):
     )
     
     if new_template_file is not None:
-        # กำหนดตำแหน่งพิกัดไฟล์ปลายทางในโฟลเดอร์ hr_templates บนคลาวด์
         save_path = os.path.join(TEMPLATES_FOLDER, new_template_file.name)
         
-        # เขียนไฟล์ไบนารีบันทึกลงดิสก์จำลองของเซิร์ฟเวอร์
         with open(save_path, "wb") as f:
             f.write(new_template_file.getbuffer())
             
-        # เคลียร์ค่าโครงสร้างเก่าใน session_state เพื่อสั่งให้ระบบทำการแกะไฟล์ตารางรอบใหม่แบบ Real-time
         st.session_state["templates_available"] = learn_templates()
-        
-        # แสดงกล่องแจ้งข่าวสารสำเร็จรูป พร้อมคำแนะนำพนักงาน
         st.success(T["admin_upload_success"].format(name=new_template_file.name))
