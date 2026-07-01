@@ -774,21 +774,7 @@ with st.sidebar:
             <p>{T['sidebar_pro_sub']}</p>
         </div>
     """, unsafe_allow_html=True)
-# ===================== MANAGEMENT (ส่วนอัปโหลดจัดการเทมเพลต) =====================
-with st.expander("⚙️ สำหรับผู้ดูแลระบบ: อัปโหลดเทมเพลตใหม่"):
-    new_template_file = st.file_uploader("อัปโหลดไฟล์แม่แบบ Excel (.xlsx)", type=["xlsx"])
-    if new_template_file is not None:
-        # 1. บันทึกไฟล์ไบนารีลงโฟลเดอร์ hr_templates ของเซิร์ฟเวอร์จำลอง
-        save_path = os.path.join(TEMPLATES_FOLDER, new_template_file.name)
-        with open(save_path, "wb") as f:
-            f.write(new_template_file.getbuffer())
-            
-        # 🔥 [จุดแก้ไขสำคัญ] สั่งล้างแคชเก่าในหน่วยความจำทิ้งทันที และสั่งสแกนโฟลเดอร์ใหม่แบบ Live Check
-        st.session_state["templates_available"] = learn_templates()
-        
-        # 2. แจ้งผลสำเร็จและสั่งให้หน้าจอรีเฟรชตัวเองเพื่อให้ชื่อโผล่ใน Step 1 ทันที
-        st.success("บันทึกเทมเพลตเรียบร้อย!")
-        st.rerun()  # สั่งให้แอปรีเฟรชหน้าบ้านทันที เพื่ออัปเดตรายชื่อในคอมโบ้บ็อกซ์ขั้นตอนที่ 1
+
 # --- ส่วนการแสดงผลหลัก (Dark / Indigo Premium UI) ---
 
 st.markdown(f"""
